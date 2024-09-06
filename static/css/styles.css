@@ -1,0 +1,55 @@
+/* 整体样式 */
+body#main {
+    /* 设置为灰色背景  */
+    background-color: #f0f0f0;
+}
+
+/* 顶部样式 */
+header#top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    /* 添加阴影以区分顶部栏 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* 根据需要调整高度 */
+    height: 60px;
+    /* 设置容器的宽度 */
+    display: flex;
+    /* 将组件从上到下排列 */
+    align-items: center;
+    /* 将组件从左侧开始排列 */
+    justify-content: flex-start;
+    /* 将整个容器推到右侧 */
+    margin-left: auto;
+    /* 设置组件之间的间隙 */
+    gap: 10px;
+    /* 文字与左边有一定距离 */
+    padding-left: 10px;
+}
+
+main#body {
+    /* 设置容器的外边距向下移动60px */
+    padding-top: 60px;
+}
+
+/* 底部样式 */
+footer#bottom {
+    width: 100%;
+    position: absolute;
+    /* 确保left: 0;生效 */
+    left: 0;
+    /* 与上面的内容保持一定的距离 */
+    margin-top: 20px;
+    /* 添加顶部边框 */
+    border-top: 1px solid #ccc;
+    /* 添加阴影 */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    /* 设置背景颜色 */
+    background-color: white;
+}
+
+footer#bottom p {
+    text-indent: 20px;
+}

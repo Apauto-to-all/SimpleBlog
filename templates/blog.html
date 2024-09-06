@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}博客标题{% endblock %}
+
+{% block content %}
+
+<!-- Mackdown解析器 -->
+<script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
+<!-- 博客样式 -->
+<link rel="stylesheet" href="../static/css/blog.css">
+
+<div id="md-content"></div>
+
+<script>
+  // 定义Markdown文本
+  const markdownText = `
+  # 这是一个标题
+  这是一些普通文本。
+  - 这是一个列表项
+    - 这是另一个列表项
+
+    **这是粗体文本。**
+
+    [这是一个链接](https://www.example.com)
+
+    ![这是一个图片](https://www.example.com/image.jpg)
+
+    > 这是一个引用。
+
+    如何在Markdown中插入代码块？
+    例如：
+    \`\`\`python
+    print('Hello, World!')
+    这是一个代码块。
+    想要在Markdown中插入代码块，只需要使用三个反引号。
+    \`\`\`
+    还有其他很多Markdown语法，例如：
+    - 表格
+    - 脚注
+    - 删除线
+    - 下划线
+    - 行内代码
+    - 自动链接
+    - 任务列表
+    - Emoji
+    - 注释
+    - 定义列表
+    - 内嵌HTML
+    - 转义字符
+    - 自动链接
+    - 代码块
+    - 表情符号
+    - 超链接
+    - 图片
+    - 引用
+  `;
+
+  // 将Markdown文本转换为HTML
+  const htmlContent = marked(markdownText);
+  // 将转换后的HTML插入到网页中
+  document.getElementById('md-content').innerHTML = htmlContent;
+</script>
+{% endblock %}

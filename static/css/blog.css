@@ -1,0 +1,9 @@
+/* 博客内容样式 */
+#md-content {
+    /* 设置容器的内边距 */
+    padding: 10px;
+    /* 设置容器的背景颜色 */
+    background-color: white;
+    /* 添加阴影 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
