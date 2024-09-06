@@ -10,7 +10,9 @@ from fastapi.responses import RedirectResponse  # 功能：用于重定向
 from fastapi.templating import Jinja2Templates  # 功能：用于渲染模板
 from typing import Optional  # 功能：用于声明可选参数
 
-import logging  # 功能：用于记录日志
+import logging
+
+from utils import blog_util  # 导入博客工具
 
 logger = logging.getLogger(__name__)
 
@@ -24,4 +26,8 @@ async def index(request: Request, blog_id: Optional[int] = None):
     if not blog_id:
         # 跳转到首页
         return RedirectResponse("/")
-    return templates.TemplateResponse("blog.html", {"request": request})
+    # 获取博客信息
+    blog_dict = await blog_util.get_blog_info(blog_id)
+    return templates.TemplateResponse(
+        "blog.html", {"request": request, "blog_dict": blog_dict}
+    )

@@ -163,3 +163,5 @@ cython_debug/
 
 .vscode
 static/favicon_logosc
+
+private_*

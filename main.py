@@ -9,12 +9,33 @@ from fastapi.staticfiles import StaticFiles  # 静态文件目录
 import config  # 导入配置文件
 from typing import Optional
 import logging
+from db.connection import DatabaseOperation
 from routes import index, blog  # 导入路由模块
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
 
 app = FastAPI()  # 创建 FastAPI 实例
+
+db_operation = DatabaseOperation()  # 创建数据库操作对象
+
+
+async def startup_event():  # 连接数据库
+    await db_operation.connectPool()
+    logger.info("连接数据库")
+
+
+app.add_event_handler("startup", startup_event)  # 注册事件，项目启动时连接数据库
+
+
+async def shutdown_event():  # 关闭数据库连接池
+    await db_operation.pool.close()
+    logger.info("关闭数据库连接池")
+
+
+app.add_event_handler("shutdown", shutdown_event)  # 项目关闭时关闭数据库连接池
+
+
 app.mount("/static", StaticFiles(directory="static"), name="static")  # 静态文件目录
 
 
