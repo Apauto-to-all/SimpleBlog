@@ -19,8 +19,11 @@ async def create_database():
         port=pgsql_port,
     )
     # 创建一个数据库
-    await conn.execute(f"CREATE DATABASE IF NOT EXISTS {database_name};")
+    await conn.execute(f"CREATE DATABASE {database_name};")
     await conn.close()
+
+
+asyncio.run(create_database())
 
 
 # 创建一些表
@@ -36,13 +39,13 @@ async def create_tables():
     """
     用户表：
     用户名（id）- 主键，用户自定义，使用字母+数字，唯一，2-15位
-    密码 - 6-15位，包含字母和数字
+    密码 - 4-15位，包含字母和数字，加密后60位
     昵称 - 2-20位，不包含特殊字符
     """
     sql = """
     CREATE TABLE IF NOT EXISTS users (
         username varchar(15) NOT NULL,
-        password varchar(15) NOT NULL,
+        password varchar(60) NOT NULL,
         nickname varchar(20) NOT NULL,
         PRIMARY KEY (username)
     );
@@ -77,13 +80,13 @@ async def create_tables():
     # 创建一个标签表
     """
     标签表：
-    标签 - 自定义，2-15位
+    标签 - 自定义，2-30位
     博客id - 外键，关联博客表
     二者联合主键
     """
     sql = """
     CREATE TABLE IF NOT EXISTS tags (
-        tag varchar(15),
+        tag varchar(30) NOT NULL,
         blog_id int REFERENCES blogs(blog_id),
         PRIMARY KEY (tag, blog_id)
     );
@@ -92,7 +95,7 @@ async def create_tables():
     # 创建一一个标签视图，用于查询标签，所有标签和对应的博客数量
     """
     标签视图：
-    标签 - 自定义，2-15位
+    标签 - 自定义，2-30位
     博客数量 - 该标签对应的博客数量
     """
     # 检查视图是否存在的 SQL 语句

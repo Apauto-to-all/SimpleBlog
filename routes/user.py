@@ -20,14 +20,11 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/blog", response_class=HTMLResponse)
-@router.get("/blog/{blog_id}", response_class=HTMLResponse)
-async def blog(request: Request, blog_id: Optional[int] = None):
-    if not blog_id:
-        # 跳转到首页
-        return RedirectResponse("/")
-    # 获取博客信息
-    blog_dict = await blog_util.get_blog_info(blog_id)
-    return templates.TemplateResponse(
-        "blog.html", {"request": request, "blog_dict": blog_dict}
-    )
+@router.get("/user/{username}", response_class=HTMLResponse)
+async def user(request: Request, username: Optional[str] = None):
+    return templates.TemplateResponse("user.html", {"request": request})
+
+
+@router.get("/user/{username}/blog", response_class=HTMLResponse)
+async def user_blog(request: Request, username: Optional[str] = None):
+    return templates.TemplateResponse("user_blog.html", {"request": request})

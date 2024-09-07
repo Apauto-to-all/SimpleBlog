@@ -1,16 +1,13 @@
+import asyncio
 import traceback
 import logging
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
 
-from connection import DatabaseOperation
-
 
 # 博客表操作类
-class BlogOperation(DatabaseOperation):
-    def __init__(self):
-        super().__init__()
+class BlogOperation:
 
     # 创建草稿博客
     async def blogs_insert_draft(self, title: str, content: str, username: str):

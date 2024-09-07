@@ -1,17 +1,13 @@
+import asyncio
 import traceback
 import logging
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
 
-from connection import DatabaseOperation
-
 
 # 标签表操作类
-class TagsOperation(DatabaseOperation):
-    def __init__(self):
-        super().__init__()
-
+class TagsOperation:
     # 创建标签，首先删除所有标签，再插入新标签
     async def tags_insert(self, tag_list: list, blog_id: int):
         """

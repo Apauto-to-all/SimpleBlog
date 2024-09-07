@@ -32,6 +32,11 @@ header#top {
 main#body {
     /* 设置容器的外边距向下移动60px */
     padding-top: 60px;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* 底部样式 */

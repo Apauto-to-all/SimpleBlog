@@ -10,7 +10,7 @@ import config  # 导入配置文件
 from typing import Optional
 import logging
 from db.connection import DatabaseOperation
-from routes import index, blog  # 导入路由模块
+from routes import index, blog, login_register, write_blog, user
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
@@ -51,6 +51,9 @@ async def root():
 
 app.include_router(index.router)  # 注册首页路由
 app.include_router(blog.router)  # 注册博客路由
+app.include_router(login_register.router)  # 注册登录注册路由
+app.include_router(write_blog.router)  # 注册写博客路由
+app.include_router(user.router)  # 注册用户路由
 
 if __name__ == "__main__":
     logger.info("启动 FastAPI 服务")

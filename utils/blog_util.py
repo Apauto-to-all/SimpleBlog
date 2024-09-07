@@ -1,8 +1,8 @@
 # 博客的工具
-from ..db.blogs_operate import BlogsOperate
+from db.connection import DatabaseOperation
 
 # 创建一个数据库操作对象
-blogs_operation = BlogsOperate()
+blogs_operation = DatabaseOperation()
 
 
 # 通过博客的id获取博客的信息

@@ -1,13 +1,13 @@
 import sys
 import traceback
 import asyncpg  # 导入 asyncpg 模块，用于异步访问 PostgreSQL 数据库
-
+import asyncio
 import logging
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
 
-from .private_settings import (
+from private_settings import (
     pgsql_host,
     pgsql_user,
     pgsql_password,
@@ -15,9 +15,13 @@ from .private_settings import (
     pgsql_port,
 )
 
+from .blogs_operate import BlogOperation
+from .tags_operate import TagsOperation
+from .users_operate import UserOperation
+
 
 # 数据库操作类
-class DatabaseOperation:
+class DatabaseOperation(BlogOperation, TagsOperation, UserOperation):
     _instance = None  # 单例模式
     error_mun = 0  # 错误次数
 
@@ -45,6 +49,7 @@ class DatabaseOperation:
                     port=pgsql_port,  # 数据库端口
                 )
             )
+            logger.info("数据库连接成功！")
         except Exception as e:
             self.error_mun += 1
             error_info = traceback.format_exc()
@@ -61,10 +66,11 @@ class DatabaseOperation:
         """
         关闭数据库连接
         """
-        try:
-            await self.pool.close()
-        except Exception as e:
-            error_info = traceback.format_exc()
-            logger.error(error_info)
-            logger.error(e)
-            pass
+        if self.pool:
+            try:
+                await self.pool.close()
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                pass
