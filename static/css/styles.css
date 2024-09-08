@@ -2,6 +2,10 @@
 body#main {
     /* 设置为灰色背景  */
     background-color: #f0f0f0;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin: 0px;
 }
 
 /* 顶部样式 */
@@ -69,9 +73,7 @@ header#top .user-avatar {
 
 main#body {
     /* 设置容器的外边距向下移动60px */
-    padding-top: 60px;
-    height: 100%;
-    margin: 0;
+    padding-top: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,18 +81,14 @@ main#body {
 
 /* 底部样式 */
 footer#bottom {
-    width: 100%;
-    position: absolute;
-    /* 确保left: 0;生效 */
-    left: 0;
-    /* 与上面的内容保持一定的距离 */
-    margin-top: 20px;
     /* 添加顶部边框 */
     border-top: 1px solid #ccc;
     /* 添加阴影 */
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     /* 设置背景颜色 */
     background-color: white;
+    margin-top: auto;
+    font-family: Arial, sans-serif;
 }
 
 footer#bottom p {
