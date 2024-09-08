@@ -37,7 +37,7 @@ header#top .user-avatar {
     cursor: pointer;
 }
 
-.avatar {
+header#top .user-avatar .avatar {
     /* 设置头像宽度 */
     width: 60px;
     /* 设置头像高度 */
@@ -56,7 +56,7 @@ header#top .user-avatar {
     overflow: hidden;
 }
 
-.initials {
+header#top .user-avatar .initials {
     display: flex;
     /* 水平居中 */
     justify-content: center;

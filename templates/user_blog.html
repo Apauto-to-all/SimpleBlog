@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} {{ user_dict.nickname }} 的博客页面 {% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/static/css/login.css">
+
+<div class="container">
+    <h1>你好，{{ user_dict.nickname }}！</h1>
+    <div class="user-info">
+        <p><strong>昵称：</strong> {{ user_dict.nickname }}</p>
+        <p><strong>用户名：</strong> {{ user_dict.username }}</p>
+        <!-- 其他用户信息 -->
+        <a href="/user/{{ user_dict.username }}/blog">查看博客</a>
+        <a href="/user/logout">退出登录</a>
+    </div>
+</div>
+
+{% endblock %}

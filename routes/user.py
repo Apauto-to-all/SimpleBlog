@@ -49,6 +49,14 @@ async def user_blog(
 ):
     user_dict = await login_util.get_user_dict(username)
     if user_dict and access_token and await login_util.is_login(access_token, username):
-        return templates.TemplateResponse("user_blog.html", {"request": request})
+        # 去除密码
+        user_dict.pop("password", None)
+        return templates.TemplateResponse(
+            "user_blog.html",
+            {
+                "request": request,
+                "user_dict": user_dict,
+            },
+        )
 
     return RedirectResponse("/index", status_code=302)

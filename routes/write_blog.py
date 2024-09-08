@@ -12,7 +12,7 @@ from typing import Optional  # 功能：用于声明可选参数
 
 import logging
 
-from utils import blog_util  # 导入博客工具
+from utils import blog_util, login_util
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +21,14 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/user/{username}/blog/write", response_class=HTMLResponse)
-async def write_blog(request: Request, username: Optional[str] = None):
-    return templates.TemplateResponse("write_blog.html", {"request": request})
+async def write_blog(
+    request: Request,
+    username: Optional[str] = None,
+    access_token: Optional[str] = Cookie(None),
+):
+    user_dict = await login_util.get_user_dict(username)
+    if user_dict and access_token and await login_util.is_login(access_token, username):
+        return templates.TemplateResponse("write_blog.html", {"request": request})
 
 
 @router.get("/user/{username}/blog/revise/{blog_id}", response_class=HTMLResponse)

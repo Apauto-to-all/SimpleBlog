@@ -25,7 +25,7 @@ templates = Jinja2Templates(directory="templates")
 async def blog(request: Request, blog_id: Optional[int] = None):
     if not blog_id:
         # 跳转到首页
-        return RedirectResponse("/")
+        return RedirectResponse("/index")
     # 获取博客信息
     blog_dict = await blog_util.get_blog_info(blog_id)
     return templates.TemplateResponse(
