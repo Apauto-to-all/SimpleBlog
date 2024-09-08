@@ -30,12 +30,21 @@ async def write_blog(
     if user_dict and access_token and await login_util.is_login(access_token, username):
         return templates.TemplateResponse("write_blog.html", {"request": request})
 
+    return RedirectResponse("/index", status_code=302)
+
 
 @router.get("/user/{username}/blog/revise/{blog_id}", response_class=HTMLResponse)
 async def write_blog(
-    request: Request, username: Optional[str] = None, blog_id: Optional[int] = None
+    request: Request,
+    username: Optional[str] = None,
+    access_token: Optional[str] = Cookie(None),
+    blog_id: Optional[int] = None,
 ):
-    return templates.TemplateResponse("write_blog.html", {"request": request})
+    user_dict = await login_util.get_user_dict(username)
+    if user_dict and access_token and await login_util.is_login(access_token, username):
+        return templates.TemplateResponse("write_blog.html", {"request": request})
+
+    return RedirectResponse("/index", status_code=302)
 
 
 @router.post("/user/{username}/write_blog")
@@ -44,4 +53,4 @@ async def write_blog(request: Request, username: Optional[str] = None):
     title = form.get("title")
     content = form.get("content")
     blog_id = await blog_util.write_blog(username, title, content)
-    return RedirectResponse(f"/blog/{blog_id}")
+    return RedirectResponse(f"/blog/{blog_id}", status_code=302)

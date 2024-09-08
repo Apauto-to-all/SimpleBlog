@@ -12,6 +12,7 @@
         <p><strong>昵称：</strong> {{ user_dict.nickname }}</p>
         <p><strong>用户名：</strong> {{ user_dict.username }}</p>
         <!-- 其他用户信息 -->
+        <a href="/user/{{ user_dict.username }}/blog/write">写博客</a>
         <a href="/user/{{ user_dict.username }}/blog">查看博客</a>
         <a href="/user/logout">退出登录</a>
     </div>
