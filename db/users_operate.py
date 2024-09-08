@@ -42,33 +42,12 @@ class UserOperation:
                 logger.error(e)
                 return False
 
-    # 查询用户，获取密码
-    async def users_select_password(self, username: str):
-        """
-        查询用户，获取密码
-        :param username: 用户名
-        :return: 返回用户密码，查询失败返回None
-        """
-        async with self.pool.acquire() as conn:
-            try:
-                sql = """
-                SELECT password FROM users WHERE username = $1;
-                """
-                password = await conn.fetchval(sql, username)
-                logger.info(f"用户{username}查询密码成功！")
-            except Exception as e:
-                error_info = traceback.format_exc()
-                logger.error(error_info)
-                logger.error(e)
-                return None
-        return password
-
-    # 用户名是否存在
-    async def users_select_username(self, username: str):
+    # 查询用户的所有信息，返回用户信息
+    async def users_select(self, username: str) -> dict:
         """
         查询用户
         :param username: 用户名
-        :return: 返回用户信息，查询失败返回None
+        :return: 返回用户信息，查询失败返回{}
         """
         async with self.pool.acquire() as conn:
             try:
@@ -76,13 +55,22 @@ class UserOperation:
                 SELECT * FROM users WHERE username = $1;
                 """
                 user = await conn.fetchrow(sql, username)
-                logger.info(f"用户{username}查询成功！")
+                if not user:
+                    logger.info(f"用户{username}的信息查询失败！")
+                    return {}
+                user_dict = {
+                    "username": user.get("username", None),
+                    "password": user.get("password", None),
+                    "nickname": user.get("nickname", None),
+                }
+                logger.info(f"用户{username}的信息查询成功！")
             except Exception as e:
                 error_info = traceback.format_exc()
                 logger.error(error_info)
                 logger.error(e)
-                return None
-        return user
+                return {}
+
+            return user_dict if user_dict else {}
 
 
 """

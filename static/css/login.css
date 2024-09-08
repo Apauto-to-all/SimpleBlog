@@ -59,8 +59,30 @@ button:hover {
 }
 
 p.warning {
-    color: red;
     /* 设置文字颜色为红色 */
-    font-weight: bold;
+    color: red;
     /* 设置文字加粗 */
+    font-weight: bold;
+}
+
+.user-info {
+    display: flex;
+    /* 垂直排列 */
+    flex-direction: column;
+    /* 水平居中 */
+    margin: 0 auto;
+    /* 内边距 */
+    padding: 10px;
+    /* 边框 */
+    border: 1px solid #ccc;
+    /* 圆角 */
+    border-radius: 5px;
+    /* 背景颜色 */
+    background-color: #f9f9f9;
+}
+
+.user-info p,
+.user-info a {
+    margin: 10px 0;
+    /* 设置上下外边距 */
 }

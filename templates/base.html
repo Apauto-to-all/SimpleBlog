@@ -7,6 +7,8 @@
     <title>{% block title %}简易博客{% endblock %}</title>
     <!-- 主要样式 -->
     <link rel="stylesheet" href="../static/css/styles.css">
+    <!-- 用户头像js -->
+    <script src="../static/js/user-avatar.js" defer></script>
     <!-- 禁止缓存 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -19,6 +21,11 @@
         <a href="/index">首页</a>
         <a href="/about">关于</a>
         <a href="/contact">联系</a>
+        <div class="user-avatar" onclick="window.open('/user/login')">
+            <div class="avatar">
+                <span class="initials">未登入</span>
+            </div>
+        </div>
     </header>
 
     <main id="body">

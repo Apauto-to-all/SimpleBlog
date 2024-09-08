@@ -12,7 +12,7 @@ from typing import Optional  # 功能：用于声明可选参数
 
 import logging
 
-from utils import blog_util  # 导入博客工具
+from utils import blog_util, login_util
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +21,34 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/user/{username}", response_class=HTMLResponse)
-async def user(request: Request, username: Optional[str] = None):
-    return templates.TemplateResponse("user.html", {"request": request})
+async def user(
+    request: Request,
+    username: Optional[str] = None,
+    access_token: Optional[str] = Cookie(None),
+):
+    user_dict = await login_util.get_user_dict(username)
+    if user_dict and access_token and await login_util.is_login(access_token, username):
+        # 去除密码
+        user_dict.pop("password", None)
+        return templates.TemplateResponse(
+            "user.html",
+            {
+                "request": request,
+                "user_dict": user_dict,
+            },
+        )
+
+    return RedirectResponse("/index", status_code=302)
 
 
 @router.get("/user/{username}/blog", response_class=HTMLResponse)
-async def user_blog(request: Request, username: Optional[str] = None):
-    return templates.TemplateResponse("user_blog.html", {"request": request})
+async def user_blog(
+    request: Request,
+    username: Optional[str] = None,
+    access_token: Optional[str] = Cookie(None),
+):
+    user_dict = await login_util.get_user_dict(username)
+    if user_dict and access_token and await login_util.is_login(access_token, username):
+        return templates.TemplateResponse("user_blog.html", {"request": request})
+
+    return RedirectResponse("/index", status_code=302)

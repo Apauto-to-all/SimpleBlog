@@ -92,7 +92,8 @@ async def login_user(username, password):
     :return: 登入成功返回True，登入失败返回False
     """
     # 获取用户密码
-    hashed_password = await users_operate.users_select_password(username)
+    user_record = await users_operate.users_select(username)
+    hashed_password = user_record.get("password") if user_record else None
     if not hashed_password:
         logger.error("用户不存在！登入失败！")
         return False
@@ -144,15 +145,37 @@ async def get_user_from_jwt(token: str) -> str:
 
 
 # 验证是否登入
-async def is_login_get_username(access_token: str) -> str:
+async def is_login(access_token: str, or_username=None) -> str:
     """
     验证是否登入，返回用户名
     :param access_token: JWT Token
+    :param or_username: 用户名, 用于验证是否是当前用户
     :return: 已登入返回True，未登入返回False
     """
     if not access_token:
         return False
     username = await get_user_from_jwt(access_token)  # 从 JWT 中获取用户名
-    if await users_operate.users_select_username(username):
-        return username
-    return ""
+    if not or_username:
+        user_dict = await users_operate.users_select(username)
+        or_username = user_dict.get("username", None)
+    if username == or_username:
+        return True
+    return False
+
+
+# 获取用户信息
+async def get_user_dict(username: str) -> dict:
+    """
+    获取用户信息
+    :param username: 用户名
+    :return:
+    {
+        "username": 用户名,
+        "password": 密码,
+        "nickname": 昵称,
+    }
+    """
+    user_dict = await users_operate.users_select(username)
+    if user_dict:
+        return user_dict
+    return {}

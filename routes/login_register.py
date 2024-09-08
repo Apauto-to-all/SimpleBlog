@@ -25,7 +25,7 @@ async def login(
     request: Request,
     access_token: Optional[str] = Cookie(None),
 ):
-    if access_token and await login_util.is_login_get_username(access_token):
+    if access_token and await login_util.is_login(access_token):
         return templates.TemplateResponse(
             "login.html", {"request": request, "is_login": True}
         )
@@ -42,7 +42,7 @@ async def login(
     limit = """登入失败，用户名或密码错误"""
     if await login_util.login_user(username, password):
         # 添加cookie
-        response = RedirectResponse("/index", status_code=302)
+        response = RedirectResponse(f"/user/{username}", status_code=302)
         response.set_cookie(
             key="access_token",  # 设置 Cookie 的键
             value=await login_util.get_access_jwt(username),  # 设置 Cookie 的值
@@ -80,3 +80,26 @@ async def register(
         response.delete_cookie(key="access_token")
         return response
     return {"error": str(limit)}
+
+
+# 注销页面
+@router.get("/user/logout")
+async def logout():
+    response = RedirectResponse("/index", status_code=302)
+    response.delete_cookie(key="access_token")
+    return response
+
+
+# API获取用户信息以及跳转链接
+@router.get("/user/user_info")
+async def is_login(
+    access_token: Optional[str] = Cookie(None),
+):
+    if access_token:
+        username = await login_util.get_user_from_jwt(access_token)
+        if username:
+            user_dict = await login_util.get_user_dict(username)
+            if user_dict:
+                return {user_dict.get("nickname", "未知用户"): f"/user/{username}"}
+
+    return {"未登入": "/user/login"}

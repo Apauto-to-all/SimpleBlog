@@ -19,14 +19,52 @@ header#top {
     display: flex;
     /* 将组件从上到下排列 */
     align-items: center;
-    /* 将组件从左侧开始排列 */
-    justify-content: flex-start;
-    /* 将整个容器推到右侧 */
-    margin-left: auto;
     /* 设置组件之间的间隙 */
     gap: 10px;
     /* 文字与左边有一定距离 */
     padding-left: 10px;
+}
+
+header#top .user-avatar {
+    padding-right: 5%;
+    margin-left: auto;
+    align-items: center;
+    /* 设置鼠标悬停时的样式为手型 */
+    cursor: pointer;
+}
+
+.avatar {
+    /* 设置头像宽度 */
+    width: 60px;
+    /* 设置头像高度 */
+    height: 60px;
+    /* 设置圆形 */
+    border-radius: 50%;
+    /* 背景颜色 */
+    background-color: #1296db;
+    /* 设置头像内部的内容居中 */
+    display: flex;
+    /* 水平居中 */
+    justify-content: center;
+    /* 垂直居中 */
+    align-items: center;
+    /* 确保文字不会突破头像边界 */
+    overflow: hidden;
+}
+
+.initials {
+    display: flex;
+    /* 水平居中 */
+    justify-content: center;
+    /* 垂直居中 */
+    align-items: center;
+    /* 使文字占满父元素 */
+    border-radius: 50%;
+    /* 字体颜色 */
+    color: #FFFFE0;
+    /* 字体大小 */
+    font-size: 12px;
+    user-select: none;
 }
 
 main#body {
