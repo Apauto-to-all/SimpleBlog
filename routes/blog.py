@@ -22,12 +22,16 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/blog", response_class=HTMLResponse)
 @router.get("/blog/{blog_id}", response_class=HTMLResponse)
-async def blog(request: Request, blog_id: Optional[int] = None):
-    if not blog_id:
-        # 跳转到首页
-        return RedirectResponse("/index")
-    # 获取博客信息
-    blog_dict = await blog_util.get_blog_info(blog_id)
-    return templates.TemplateResponse(
-        "blog.html", {"request": request, "blog_dict": blog_dict}
-    )
+async def blog(
+    request: Request,
+    blog_id: Optional[int] = None,
+):
+    if blog_id:
+        # 获取博客信息
+        blog_dict = await blog_util.get_blog_info(blog_id)
+        if blog_dict:
+            return templates.TemplateResponse(
+                "blog.html", {"request": request, "blog_dict": blog_dict}
+            )
+    # 跳转到首页
+    return RedirectResponse("/index")

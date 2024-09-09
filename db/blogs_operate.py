@@ -92,12 +92,12 @@ class BlogOperation:
                 blog_info = await conn.fetchrow(sql, blog_id)
                 blog_dict = {
                     "blog_id": blog_id,  # 博客id
-                    "title": blog_info[0],  # 博客标题
-                    "content": blog_info[1],  # 博客内容
-                    "username": blog_info[2],  # 博客作者
-                    "views": blog_info[3],  # 阅读量
-                    "likes": blog_info[4],  # 点赞量
-                    "created_at": blog_info[5],  # 发布时间
+                    "title": blog_info.get("title"),  # 博客标题
+                    "content": blog_info.get("content"),  # 博客内容
+                    "username": blog_info.get("username"),  # 博客作者
+                    "views": blog_info.get("views"),  # 阅读量
+                    "likes": blog_info.get("likes"),  # 点赞量
+                    "created_at": blog_info.get("created_at"),  # 发布时间
                 }
                 logger.info(f"博客-{blog_id}读取成功，已经返回内容！")
             except Exception as e:

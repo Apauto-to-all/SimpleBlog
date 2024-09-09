@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} blog_dict.title {% endblock %}
+{% block title %} {{blog_dict.title}} {% endblock %}
 
 {% block content %}
 
@@ -9,14 +9,21 @@
 <!-- 博客样式 -->
 <link rel="stylesheet" href="/static/css/blog.css">
 
-<div id="md-content"></div>
+<div class="container">
+  <!-- 博客标题 -->
+  <div class="title-input">
+    <label id="title">{{ blog_dict.title }}</label>
+  </div>
+  <!-- 博客内容 -->
+  <div id="md-content"></div>
+</div>
 
 <script>
-  // // 定义Markdown文本
-  // const markdownText = `{{ blog_dict.content }}`;
-  // // 将Markdown文本转换为HTML
-  // const htmlContent = marked(markdownText);
-  // // 将转换后的HTML插入到网页中
-  // document.getElementById('md-content').innerHTML = htmlContent;
+  // 获取Markdown文本
+  const markdownText = `{{ blog_dict.content }}`;
+  // 将Markdown文本转换为HTML
+  const htmlContent = marked(markdownText);
+  // 将转换后的HTML插入到网页中
+  document.getElementById('md-content').innerHTML = htmlContent;
 </script>
 {% endblock %}
