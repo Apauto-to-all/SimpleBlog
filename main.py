@@ -37,6 +37,7 @@ app.add_event_handler("shutdown", shutdown_event)  # 项目关闭时关闭数据
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")  # 静态文件目录
+app.mount("/layui", StaticFiles(directory="layui"), name="layui")  # layui 静态文件目录
 
 
 @app.get("/favicon.ico")  # 获取网站图标

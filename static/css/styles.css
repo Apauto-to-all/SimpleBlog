@@ -1,93 +1,32 @@
 /* 整体样式 */
-body#main {
-    /* 设置为灰色背景  */
-    background-color: #f0f0f0;
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-    margin: 0px;
+body {
+  /* 设置为灰色背景  */
+  background-color: #f0f0f0;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  margin: 0px;
 }
 
-/* 顶部样式 */
-header#top {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-    /* 添加阴影以区分顶部栏 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* 根据需要调整高度 */
-    height: 60px;
-    /* 设置容器的宽度 */
-    display: flex;
-    /* 将组件从上到下排列 */
-    align-items: center;
-    /* 设置组件之间的间隙 */
-    gap: 10px;
-    /* 文字与左边有一定距离 */
-    padding-left: 10px;
-}
-
-header#top .user-avatar {
-    padding-right: 5%;
-    margin-left: auto;
-    align-items: center;
-    /* 设置鼠标悬停时的样式为手型 */
-    cursor: pointer;
-}
-
-header#top .user-avatar .avatar {
-    /* 设置头像宽度 */
-    width: 60px;
-    /* 设置头像高度 */
-    height: 60px;
-    /* 设置圆形 */
-    border-radius: 50%;
-    /* 背景颜色 */
-    background-color: #1296db;
-    /* 设置头像内部的内容居中 */
-    display: flex;
-    /* 水平居中 */
-    justify-content: center;
-    /* 垂直居中 */
-    align-items: center;
-    /* 确保文字不会突破头像边界 */
-    overflow: hidden;
-}
-
-header#top .user-avatar .initials {
-    display: flex;
-    /* 水平居中 */
-    justify-content: center;
-    /* 垂直居中 */
-    align-items: center;
-    /* 使文字占满父元素 */
-    border-radius: 50%;
-    /* 字体颜色 */
-    color: #FFFFE0;
-    /* 字体大小 */
-    font-size: 12px;
-    user-select: none;
-}
-
-main#body {
-    /* 设置容器的外边距向下移动60px */
-    padding-top: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* 主体样式 */
+main {
+  /* 设置容器的外边距向下移动60px */
+  padding-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 底部样式 */
-footer#bottom {
-    /* 添加顶部边框 */
-    border-top: 1px solid #ccc;
-    /* 添加阴影 */
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    /* 设置背景颜色 */
-    background-color: white;
-    margin-top: auto;
-    font-family: Arial, sans-serif;
-    text-indent: 20px;
+footer {
+  /* 添加顶部边框 */
+  border-top: 1px solid #ccc;
+  /* 添加阴影 */
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  /* 设置背景颜色 */
+  background-color: white;
+  margin-top: auto;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  text-indent: 20px;
 }

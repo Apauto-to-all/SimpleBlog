@@ -68,3 +68,12 @@ async def write_blog(
         return -1
 
     return blog_id
+
+
+# 博客浏览量加一
+async def blog_views_add_one(blog_id: int):
+    """
+    博客浏览量加一
+    :param blog_id: 博客id
+    """
+    return await blogs_operation.blogs_views_add_one(blog_id)

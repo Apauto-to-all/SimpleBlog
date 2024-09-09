@@ -1,17 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("/user/user_info")
-        .then(response => response.json())
-        .then(data => {
-            const userAvatar = document.getElementsByClassName("user-avatar")[0];
-            const userInitials = document.getElementsByClassName("initials")[0];
-            const [nickname, link] = Object.entries(data)[0];
+  // 发送请求获取用户信息
+  fetch("/user/user_info", {
+    method: "GET",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const userName = Object.keys(data)[0];
+      const userLink = data[userName];
 
-            userInitials.textContent = nickname; // 显示用户昵称
-            userAvatar.onclick = function () {
-                window.open(link);
-            };
-        })
-        .catch(error => {
-            console.error("Error fetching user info:", error);
-        });
+      // 更新用户信息
+      document.getElementById("user-name").innerText = userName; // 更新用户名
+      document.getElementById("user-avatar").href = userLink; // 更新用户头像链接
+
+      // 如果用户未登录，隐藏用户菜单
+      if (userName === "未登入") {
+        document.getElementById("user-profile").style.display = "none"; // 隐藏用户中心按钮
+        document.getElementById("user-logout").style.display = "none"; // 隐藏登出按钮
+      } else {
+        document.getElementById("user-profile").href = userLink; // 更新用户中心链接
+        document.getElementById("user-login").style.display = "none"; // 隐藏登录按钮
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user info:", error);
+    });
 });

@@ -30,6 +30,9 @@ async def blog(
         # 获取博客所有信息
         blog_dict = await blog_util.get_blog_info(blog_id)
         if blog_dict:
+            # 博客浏览量加一
+            await blog_util.blog_views_add_one(blog_id)
+            # 返回页面
             return templates.TemplateResponse(
                 "blog.html",
                 {"request": request, "blog_dict": blog_dict},
