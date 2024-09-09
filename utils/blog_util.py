@@ -1,5 +1,8 @@
 # 博客的工具
 from db.connection import DatabaseOperation
+import logging
+
+logger = logging.getLogger(__name__)
 
 # 创建一个数据库操作对象
 blogs_operation = DatabaseOperation()
@@ -24,3 +27,37 @@ async def get_blog_info(blog_id: int) -> dict:
         "is_public": True,
     }
     return blog_info
+
+
+# 写入博客，返回博客id
+async def write_blog(
+    username: str, title: str, content: str, tags: str, is_public: bool
+) -> int:
+    """
+    写入博客，返回博客id
+    :param username: 用户名
+    :param title: 博客标题
+    :param content: 博客内容
+    :param tags: 博客标签
+    :param is_public: 是否公开
+    :return: 博客id
+    """
+    if not tags:
+        logger.error("标签为空！")
+        return -1
+    # 切割标签为列表，中文逗号或英文逗号，都可以
+    tags_list = tags.replace("，", ",").split(",")
+    # 写入草稿博客
+    blog_id = await blogs_operation.blogs_insert_draft(title, content, username)
+    if not blog_id:
+        logger.error("博客写入失败！")
+        return -1
+    if is_public:
+        if not await blogs_operation.blogs_set_public(blog_id):
+            logger.error("博客设置公开失败！")
+            return -1
+    if not await blogs_operation.tags_insert(tags_list, blog_id):
+        logger.error("博客标签写入失败！")
+        return -1
+
+    return blog_id

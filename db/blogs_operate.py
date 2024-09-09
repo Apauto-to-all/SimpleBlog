@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 # 博客表操作类
 class BlogOperation:
-
     # 创建草稿博客
     async def blogs_insert_draft(self, title: str, content: str, username: str):
         """
