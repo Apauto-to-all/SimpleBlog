@@ -90,6 +90,9 @@ class BlogOperation:
                 WHERE blog_id = $1 AND is_public = true;
                 """
                 blog_info = await conn.fetchrow(sql, blog_id)
+                if not blog_info:
+                    logger.info(f"博客-{blog_id}读取失败！")
+                    return {}
                 blog_dict = {
                     "blog_id": blog_id,  # 博客id
                     "title": blog_info.get("title"),  # 博客标题

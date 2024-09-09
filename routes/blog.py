@@ -34,4 +34,4 @@ async def blog(
                 "blog.html", {"request": request, "blog_dict": blog_dict}
             )
     # 跳转到首页
-    return RedirectResponse("/index")
+    return templates.TemplateResponse("blog_404.html", {"request": request})

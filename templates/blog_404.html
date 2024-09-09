@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 博客不存在</title>
+</head>
+
+<body>
+    <div class="container">
+        <center>
+            <h1>404 - 博客不存在</h1>
+            <p></p>
+            <h2 id="countdown">5秒!!!后跳转到首页</h2>
+            <p></p>
+            <p>如果您的浏览器没有自动跳转，请点击下面的链接</p>
+            <p></p>
+            <p><a href="/index">立即返回首页</a></p>
+        </center>
+        <script>
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = `${countdown}秒!!!后跳转到首页`;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "/index";
+                }
+            }, 1000);
+        </script>
+    </div>
+</body>
+
+</html>
