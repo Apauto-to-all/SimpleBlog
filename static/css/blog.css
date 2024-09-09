@@ -1,3 +1,4 @@
+/* 整体背景样式 */
 .container {
     display: flex;
     flex-direction: column;
@@ -18,7 +19,7 @@
 }
 
 .title-input label {
-    font-size: 32px;
+    font-size: 42px;
     color: #333;
     margin-bottom: 20px;
     border-bottom: 2px solid #007bff;
@@ -28,6 +29,89 @@
     /* 文字加粗 */
     font-weight: bold;
     text-align: center;
+}
+
+/* 博客信息样式 */
+.info {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+
+}
+
+.blog-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #666;
+}
+
+.blog-info span {
+    margin-right: 10px;
+}
+
+/* 作者链接样式 */
+.author-link {
+    cursor: pointer;
+}
+
+.author-link:hover {
+    color: #1296db;
+    text-decoration: none;
+}
+
+/* 博客标签样式 */
+.blog-tags span {
+    font-size: 16px;
+    color: #333;
+}
+
+.blog-tags .tag {
+    display: inline-block;
+    background-color: #1296db;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+/* 制作icon图标 */
+#author::before {
+    /* 使用 Unicode 字符作为图标 */
+    content: '👤';
+    /* 图标与文本之间的间距 */
+    margin-right: 5px;
+    /* 调整图标大小 */
+    font-size: 19px;
+}
+
+#time::before {
+    content: '🕒';
+    margin-right: 5px;
+    font-size: 19px;
+}
+
+#views::before {
+    content: '👁️';
+    margin-right: 5px;
+    font-size: 19px;
+}
+
+#likes::before {
+    content: '👍';
+    margin-right: 5px;
+    font-size: 19px;
+}
+
+.blog-tags::before {
+    content: '🏷️';
+    margin-right: 5px;
+    font-size: 19px;
 }
 
 /* 博客内容样式 */

@@ -1,6 +1,7 @@
 # 博客的工具
 from db.connection import DatabaseOperation
 import logging
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -16,15 +17,21 @@ async def get_blog_info(blog_id: int) -> dict:
     :return: 博客信息
     """
     blog_info = await blogs_operation.blogs_select(blog_id)
+    tags_list = await blogs_operation.tags_select(blog_id)
+    blog_info["tags"] = tags_list
+    user_info = await blogs_operation.users_select(blog_info.get("username"))
+    blog_info["nickname"] = user_info.get("nickname")
+    blog_info["created_at"] = blog_info["created_at"].strftime("%Y-%m-%d %H:%M:%S")
     {
         "blog_id": 1,  # 博客id
         "title": "博客标题",
         "content": "博客内容",
         "username": "用户名",
+        "nickname": "昵称",
         "views": 0,
         "likes": 0,
         "created_at": "2021-01-01 00:00:00",
-        "is_public": True,
+        "tags": ["标签1", "标签2"],
     }
     return blog_info
 

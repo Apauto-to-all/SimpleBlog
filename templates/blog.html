@@ -14,6 +14,25 @@
   <div class="title-input">
     <label id="title">{{ blog_dict.title }}</label>
   </div>
+  <!-- 博客信息 -->
+  <div class="info">
+    <!-- 博客信息,包括作者、发布时间、阅读量、点赞数 -->
+    <div class="blog-info">
+      <span id="author" class="author-link" onclick="window.location.href='/author/{{ blog_dict.username }}'">作者：{{
+        blog_dict.nickname
+        }}</span>
+      <span id="time">发布时间：{{ blog_dict.created_at }}</span>
+      <span id="views">阅读量：{{ blog_dict.views }}</span>
+      <span id="likes">点赞数：{{ blog_dict.likes }}</span>
+    </div>
+    <!-- 博客标签 -->
+    <div class="blog-tags">
+      <span>文章标签：</span>
+      {% for tag in blog_dict.tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </div>
   <!-- 博客内容 -->
   <div id="md-content"></div>
 </div>

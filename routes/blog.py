@@ -27,11 +27,12 @@ async def blog(
     blog_id: Optional[int] = None,
 ):
     if blog_id:
-        # 获取博客信息
+        # 获取博客所有信息
         blog_dict = await blog_util.get_blog_info(blog_id)
         if blog_dict:
             return templates.TemplateResponse(
-                "blog.html", {"request": request, "blog_dict": blog_dict}
+                "blog.html",
+                {"request": request, "blog_dict": blog_dict},
             )
     # 跳转到首页
     return templates.TemplateResponse("blog_404.html", {"request": request})

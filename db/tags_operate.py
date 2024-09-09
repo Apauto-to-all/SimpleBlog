@@ -50,13 +50,16 @@ class TagsOperation:
                 SELECT tag FROM tags WHERE blog_id = $1;
                 """
                 tags = await conn.fetch(sql, blog_id)
+                if not tags:
+                    logger.info(f"博客-{blog_id}没有标签！")
+                    return []
                 logger.info(f"博客-{blog_id}查询标签成功！")
             except Exception as e:
                 error_info = traceback.format_exc()
                 logger.error(error_info)
                 logger.error(e)
                 return []
-        return tags if tags else []
+        return [record.get("tag") for record in tags]
 
     # 获取标签列表，包含标签和对应的博客数量
     async def tags_select_view(self) -> dict:
