@@ -1,4 +1,5 @@
 # 登入，注册，登出的工具类
+import re
 import jwt  # 导入jwt模块
 from datetime import datetime, timedelta, timezone
 from private_settings import SECRET_KEY, login_time_minute
@@ -64,7 +65,7 @@ async def register_user(username, password, confirm_password, nickname):
         logger.error("密码和确认密码不一致！注册失败！")
         return False
     # 用户名和密码只能包含字母和数字
-    if not username.isalnum():
+    if not re.match("^[a-zA-Z0-9]+$", username):
         logger.error("用户名包含除了字母和数字之外的字符！注册失败！")
         return False
     if not (2 <= len(username) <= 15):
@@ -93,7 +94,7 @@ async def login_user(username, password):
     """
     # 获取用户密码
     user_record = await users_operate.users_select(username)
-    hashed_password = user_record.get("password") if user_record else None
+    hashed_password = user_record.get("password")
     if not hashed_password:
         logger.error("用户不存在！登入失败！")
         return False

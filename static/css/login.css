@@ -37,28 +37,14 @@
     font-size: 16px;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
 .form-footer {
     margin-top: 20px;
     text-align: center;
 }
 
-p.warning {
+.warning {
+    margin-top: 20px;
+    text-align: center;
     /* 设置文字颜色为红色 */
     color: red;
     /* 设置文字加粗 */
