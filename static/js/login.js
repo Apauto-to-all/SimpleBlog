@@ -5,7 +5,7 @@ layui.use(function () {
     form.on('submit(demo-login)', function (data) {
         var field = data.field; // 获取表单字段值
         // 发送数据到后端
-        fetch('/user/login', {
+        fetch('/user_login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

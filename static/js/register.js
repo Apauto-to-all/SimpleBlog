@@ -70,7 +70,7 @@ layui.use(function () {
             return false;
         }
         // 发送数据到后端
-        fetch('/user/register', {
+        fetch('/user_register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

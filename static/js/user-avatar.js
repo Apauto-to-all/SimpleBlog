@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // 发送请求获取用户信息
-  fetch("/user/user_info", {
+  fetch("/user_info", {
     method: "GET",
   })
     .then((response) => response.json())
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("user-avatar").href = userLink; // 更新用户头像链接
 
       // 如果用户未登录，隐藏用户菜单
-      if (userName === "未登入") {
+      if (userLink === "/user_login") {
         document.getElementById("user-profile").style.display = "none"; // 隐藏用户中心按钮
         document.getElementById("user-logout").style.display = "none"; // 隐藏登出按钮
       } else {

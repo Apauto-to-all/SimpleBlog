@@ -60,3 +60,18 @@ async def user_blog(
         )
 
     return RedirectResponse("/index", status_code=302)
+
+
+# API获取用户信息以及跳转链接
+@router.get("/user_info")
+async def is_login(
+    access_token: Optional[str] = Cookie(None),
+):
+    if access_token:
+        username = await login_util.get_user_from_jwt(access_token)
+        if username:
+            user_dict = await login_util.get_user_dict(username)
+            if user_dict:
+                return {user_dict.get("nickname", "未知用户"): f"/user/{username}"}
+
+    return {"未登入": "/user_login"}

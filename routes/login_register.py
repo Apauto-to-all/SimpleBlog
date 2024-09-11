@@ -27,7 +27,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/user/login", response_class=HTMLResponse)
+@router.get("/user_login", response_class=HTMLResponse)
 async def login(
     request: Request,
     access_token: Optional[str] = Cookie(None),
@@ -39,7 +39,7 @@ async def login(
     return templates.TemplateResponse("login.html", {"request": request})
 
 
-@router.post("/user/login")
+@router.post("/user_login")
 async def login(
     username: Optional[str] = Form(""),  # 获取用户名
     password: Optional[str] = Form(""),  # 获取密码
@@ -72,12 +72,12 @@ async def login(
     return {"error": str(limit)}
 
 
-@router.get("/user/register", response_class=HTMLResponse)
+@router.get("/user_register", response_class=HTMLResponse)
 async def register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 
-@router.post("/user/register")
+@router.post("/user_register")
 async def register(
     username: Optional[str] = Form(""),  # 获取用户名
     password: Optional[str] = Form(""),  # 获取密码
@@ -99,7 +99,7 @@ async def register(
         return {"error": "验证码错误"}
     if await login_util.register_user(username, password, confirm_password, nickname):
         logger.info("注册成功，重定向到登入页面")
-        response = RedirectResponse("/user/login", status_code=302)
+        response = RedirectResponse("/user_login", status_code=302)
         # 删除登入的 Cookie
         response.delete_cookie(key="access_token")
         return response
@@ -107,26 +107,11 @@ async def register(
 
 
 # 注销页面
-@router.get("/user/logout")
+@router.get("/user_logout")
 async def logout():
     response = RedirectResponse("/index", status_code=302)
     response.delete_cookie(key="access_token")
     return response
-
-
-# API获取用户信息以及跳转链接
-@router.get("/user/user_info")
-async def is_login(
-    access_token: Optional[str] = Cookie(None),
-):
-    if access_token:
-        username = await login_util.get_user_from_jwt(access_token)
-        if username:
-            user_dict = await login_util.get_user_dict(username)
-            if user_dict:
-                return {user_dict.get("nickname", "未知用户"): f"/user/{username}"}
-
-    return {"未登入": "/user/login"}
 
 
 # 获取验证码API
