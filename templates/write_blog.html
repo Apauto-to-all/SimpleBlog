@@ -6,6 +6,8 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/write_blog.css">
 <script src="/static/js/write_blog.js"></script>
+<!-- 导入Markdown样式 -->
+<link rel="stylesheet" href="/static/css/github-markdown-light.css">
 
 <div class="container">
     <!-- 输入标题 -->
@@ -15,12 +17,16 @@
     </div>
     <!-- 显示内容 -->
     <div class="write-blog">
+        <!-- 编辑器 -->
         <div class="editor">
             <textarea id="markdown_content" placeholder="在这里写你的博客内容...使用 Markdown 语法"></textarea>
         </div>
 
+        <!-- 博客内容 -->
         <div class="preview">
-            <div class="preview-show" style="user-select: none;">预览内容将显示在这里</div>
+            <div id="md-content" class="markdown-body preview-show">
+                <div style="user-select: none;">预览内容将显示在这里</div>
+            </div>
         </div>
     </div>
     <!-- 添加标签 -->
@@ -39,11 +45,22 @@
 <script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
 <script>
     const textarea = document.querySelector('.editor textarea');
-    const preview = document.querySelector('.preview .preview-show');
-
+    // 监听textarea的输入事件
     textarea.addEventListener('input', () => {
-        const markdownText = textarea.value;
-        preview.innerHTML = marked(markdownText);
+        const markdownText = textarea.value; // 获取Markdown文本
+        // 将转换后的HTML插入到网页中
+        document.getElementById('md-content').innerHTML = marked(markdownText);
+        // 为生成的HTML中的pre标签添加属性
+        document.querySelectorAll('#md-content code').forEach((block) => {
+            block.classList.add('layui-code', 'code-demo');
+        });
+
+        // 初始化Layui的代码块美化功能
+        layui.use('code', function () {
+            layui.code({
+                elem: '.code-demo'
+            });
+        });
     });
 </script>
 

@@ -8,6 +8,8 @@
 <script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
 <!-- 博客样式 -->
 <link rel="stylesheet" href="/static/css/blog.css">
+<!-- 导入Markdown样式 -->
+<link rel="stylesheet" href="/static/css/github-markdown-light.css">
 
 <div class="container">
   <!-- 博客标题 -->
@@ -34,15 +36,32 @@
     </div>
   </div>
   <!-- 博客内容 -->
-  <div id="md-content"></div>
+  <div id="md-content" class="markdown-body">
+    <!-- Markdown内容 -->
+    <input type="hidden" id="hidden-md-content" value="{{ blog_dict.content }}">
+  </div>
 </div>
 
 <script>
   // 获取Markdown文本
-  const markdownText = `{{ blog_dict.content }}`;
+  const markdownText = document.getElementById('hidden-md-content').value;
+
   // 将Markdown文本转换为HTML
   const htmlContent = marked(markdownText);
+
   // 将转换后的HTML插入到网页中
   document.getElementById('md-content').innerHTML = htmlContent;
+
+  // 为生成的HTML中的pre标签添加属性
+  document.querySelectorAll('#md-content code').forEach((block) => {
+    block.classList.add('layui-code', 'code-demo');
+  });
+
+  // 初始化Layui的代码块美化功能
+  layui.use('code', function () {
+    layui.code({
+      elem: '.code-demo'
+    });
+  });
 </script>
 {% endblock %}
