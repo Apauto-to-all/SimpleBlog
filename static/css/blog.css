@@ -66,18 +66,6 @@
 /* 博客标签样式 */
 .blog-tags span {
     font-size: 16px;
-    color: #333;
-}
-
-.blog-tags .tag {
-    display: inline-block;
-    background-color: #1296db;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    font-size: 14px;
 }
 
 /* 制作icon图标 */
