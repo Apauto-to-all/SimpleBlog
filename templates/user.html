@@ -6,15 +6,29 @@
 
 <link rel="stylesheet" href="/static/css/login.css">
 
-<div class="container">
-    <h1 style="padding: 20px;">你好，{{ user_dict.nickname }}！</h1>
-    <div class="user-info">
-        <p><strong>昵称：</strong> {{ user_dict.nickname }}</p>
-        <p><strong>用户名：</strong> {{ user_dict.username }}</p>
-        <!-- 其他用户信息 -->
-        <a href="/user/{{ user_dict.username }}/blog/write">写博客</a>
-        <a href="/user/{{ user_dict.username }}/blog">查看博客</a>
-        <a href="/user_logout">退出登录</a>
+<div class="layui-container">
+    <h1 class="layui-bg-gray" style="padding: 20px;">
+        <i class="layui-icon layui-icon-username" style="font-size: 28px; color: #1e9fff;"></i>
+        你好，{{ user_dict.nickname }}！
+    </h1>
+    <div class="user-info layui-card">
+        <div class="layui-card-header">
+            <i class="layui-icon layui-icon-user" style="font-size: 20px; color: #1e9fff;"></i>
+            用户信息
+        </div>
+        <div class="layui-card-body">
+            <p><strong>昵称：</strong> {{ user_dict.nickname }}</p>
+            <p><strong>用户名：</strong> {{ user_dict.username }}</p>
+            <!-- 其他用户信息 -->
+            <a href="/user/{{ user_dict.username }}/blog" class="layui-btn layui-btn-primary">
+                <i class="layui-icon layui-icon-edit"></i> 进入创作中心
+            </a>
+        </div>
+        <div class="layui-card-body">
+            <a href="/user_logout" class="layui-btn layui-btn-danger">
+                <i class="layui-icon layui-icon-logout"></i> 退出登录
+            </a>
+        </div>
     </div>
 </div>
 
