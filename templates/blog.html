@@ -40,9 +40,38 @@
     <!-- Markdown内容 -->
     <input type="hidden" id="hidden-md-content" value="{{ blog_dict.content }}">
   </div>
+  <!-- 点赞按钮 -->
+  <button class="layui-btn layui-btn-primary layui-btn-sm" onclick='likeBlog("{{ blog_dict.blog_id }}")'>
+    <i class="layui-icon layui-icon-praise"></i> 点赞
+  </button>
+  <!-- 评论区 -->
 </div>
 
 <script>
+  layui.use('layer', function () {
+    var layer = layui.layer;
+
+    function likeBlog(button, blogId) {
+      // 发送 AJAX 请求到服务器
+      fetch(`/like_blog?blog_id=${blogId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // 使用 Layui 的消息提示功能
+            layer.msg('点赞成功', { icon: 1 });
+            // 改变图标
+            var icon = button.querySelector('.layui-icon');
+            icon.classList.remove('layui-icon-praise');
+            icon.classList.add('layui-icon-praise-fill');
+          } else {
+            layer.msg('点赞失败: ' + data.message, { icon: 2 });
+          }
+        })
+        .catch(error => {
+          layer.msg('请求失败: ' + error, { icon: 2 });
+        });
+    }
+  });
   // 获取Markdown文本
   const markdownText = document.getElementById('hidden-md-content').value;
 

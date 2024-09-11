@@ -3,11 +3,11 @@ from fastapi import (
     Request,
     Request,
     Cookie,  # 功能：用于操作 Cookie
+    Query,  # 功能：用于获取查询参数
 )
 from fastapi.templating import Jinja2Templates  # 功能：用于渲染模板
-from fastapi.responses import HTMLResponse  # 功能：用于返回 HTML 响应
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.responses import RedirectResponse  # 功能：用于重定向
-from fastapi.templating import Jinja2Templates  # 功能：用于渲染模板
 from typing import Optional  # 功能：用于声明可选参数
 
 import logging
@@ -39,3 +39,20 @@ async def blog(
             )
     # 跳转到首页
     return templates.TemplateResponse("blog_404.html", {"request": request})
+
+
+# 点赞博客
+@router.get("/like_blog")
+async def like_blog(
+    blog_id: int = Query(..., description="博客id"),
+):
+    # 判断博客id是否为整数，是否为空
+    if not blog_id and not isinstance(blog_id, int):
+        return JSONResponse(
+            content={"success": False, "message": "无效的博客ID"}, status_code=400
+        )
+    # 博客点赞量加一
+    await blog_util.blog_likes_add_one(blog_id)
+    return JSONResponse(
+        content={"success": True, "message": "点赞成功！"}, status_code=200
+    )

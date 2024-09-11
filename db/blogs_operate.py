@@ -129,6 +129,25 @@ class BlogOperation:
                 logger.error(error_info)
                 logger.error(e)
 
+    # 点赞量加一
+    async def blogs_likes_add_one(self, blog_id: int):
+        """
+        点赞量加一
+        :param blog_id: 博客id
+        return: False - 失败，True - 成功
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                sql = """
+                UPDATE blogs SET likes = likes + 1 WHERE blog_id = $1;
+                """
+                await conn.execute(sql, blog_id)
+                logger.info(f"博客-{blog_id}点赞量加一成功！")
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+
 
 """
 博客表：

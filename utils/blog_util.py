@@ -80,3 +80,12 @@ async def blog_views_add_one(blog_id: int):
     :param blog_id: 博客id
     """
     return await blogs_operation.blogs_views_add_one(blog_id)
+
+
+# 博客点赞量加一
+async def blog_likes_add_one(blog_id: int):
+    """
+    博客点赞量加一
+    :param blog_id: 博客id
+    """
+    return await blogs_operation.blogs_likes_add_one(blog_id)
