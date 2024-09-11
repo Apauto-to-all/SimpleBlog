@@ -101,3 +101,8 @@
     margin-right: 5px;
     font-size: 19px;
 }
+
+/* 已经点赞 */
+.liked::before {
+    content: '👍';
+}

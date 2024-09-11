@@ -56,3 +56,20 @@ async def like_blog(
     return JSONResponse(
         content={"success": True, "message": "点赞成功！"}, status_code=200
     )
+
+
+# 取消点赞博客
+@router.get("/unlike_blog")
+async def unlike_blog(
+    blog_id: int = Query(..., description="博客id"),
+):
+    # 判断博客id是否为整数，是否为空
+    if not blog_id and not isinstance(blog_id, int):
+        return JSONResponse(
+            content={"success": False, "message": "无效的博客ID"}, status_code=400
+        )
+    # 博客点赞量减一
+    await blog_util.blog_likes_sub_one(blog_id)
+    return JSONResponse(
+        content={"success": True, "message": "取消点赞成功！"}, status_code=200
+    )
