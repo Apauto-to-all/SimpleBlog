@@ -49,7 +49,7 @@ async def login(
 ):
     logger.info("发送登入请求")
     # 验证码验证
-    if not await login_util.verify_password(captcha_token, captcha):
+    if not await login_util.verify_password(captcha_token, captcha.lower()):
         return {"error": "验证码错误"}
     # 要求
     limit = """登入失败，用户名或密码错误"""
@@ -95,7 +95,7 @@ async def register(
     """
     logger.info("发送注册请求")
     # 验证码验证
-    if not await login_util.verify_password(captcha_token, captcha):
+    if not await login_util.verify_password(captcha_token, captcha.lower()):
         return {"error": "验证码错误"}
     if await login_util.register_user(username, password, confirm_password, nickname):
         logger.info("注册成功，重定向到登入页面")
