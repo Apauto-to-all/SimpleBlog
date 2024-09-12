@@ -82,8 +82,12 @@ async def blog_list(
     start: int = Query(0, description="起始位置"),
     count: int = Query(10, description="获取博客数量"),
 ):
-    # 判断博客类型是否有效
-    if blog_type not in ["new", "hot", "best"]:
+    # 判断博客类型是否有效，判断起始位置和获取博客数量是否为整数
+    if (
+        not isinstance(start, int)
+        and not isinstance(count, int)
+        and blog_type not in ["new", "hot", "best"]
+    ):
         return JSONResponse(
             content={"success": False, "message": "无效的博客类型"}, status_code=400
         )
