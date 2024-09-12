@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         document.getElementById("user-profile").href = userLink; // 更新用户中心链接
         document.getElementById("user-login").style.display = "none"; // 隐藏登录按钮
+        document.getElementById("user-register").style.display = "none"; // 隐藏注册按钮
       }
     })
     .catch((error) => {
