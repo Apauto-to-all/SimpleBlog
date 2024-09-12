@@ -23,6 +23,9 @@ async def get_blog_info(blog_id: int) -> dict:
         user_info = await blogs_operation.users_select(blog_info.get("username"))
         blog_info["nickname"] = user_info.get("nickname")
         blog_info["created_at"] = blog_info["created_at"].strftime("%Y-%m-%d %H:%M:%S")
+        blog_info["last_modified"] = blog_info["last_modified"].strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
         {
             "blog_id": 1,  # 博客id
             "title": "博客标题",
@@ -31,7 +34,8 @@ async def get_blog_info(blog_id: int) -> dict:
             "nickname": "昵称",
             "views": 0,
             "likes": 0,
-            "created_at": "2021-01-01 00:00:00",
+            "created_at": "2021-01-01 00:00:00",  # 发布时间
+            "last_modified": "2021-01-01 00:00:00",  # 最后修改时间
             "tags": ["标签1", "标签2"],
         }
         return blog_info
@@ -98,3 +102,38 @@ async def blog_likes_sub_one(blog_id: int):
     :param blog_id: 博客id
     """
     return await blogs_operation.blogs_likes_sub_one(blog_id)
+
+
+# 获取博客信息列表，但时间，热度，最佳
+async def get_blogs_list(blog_type: str, start: int, count: int) -> list:
+    """
+    获取博客信息
+    :param blog_type: 博客类型 ('new', 'hot', 'best')
+    :param start: 起始位置
+    :param count: 获取博客数量
+    :return: 博客信息列表
+    """
+    blogs_list = await blogs_operation.blogs_select_list(blog_type, start, count)
+
+    if blogs_list:
+        new_blogs_list = []
+        for blog_info in blogs_list:
+            blog_dict = {
+                "blog_id": blog_info.get("blog_id"),  # 博客id
+                "title": blog_info.get("title"),  # 博客标题
+                "content": blog_info.get("content"),  # 博客内容
+                "username": blog_info.get("username"),  # 博客作者
+                "views": blog_info.get("views"),  # 阅读量
+                "likes": blog_info.get("likes"),  # 点赞量
+                "created_at": blog_info.get("created_at").strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),  # 发布时间
+                "last_modified": blog_info.get("last_modified").strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),  # 最后修改时间
+                "tags": await blogs_operation.tags_select(blog_info.get("blog_id")),
+            }
+            new_blogs_list.append(blog_dict)
+        return new_blogs_list
+
+    return []

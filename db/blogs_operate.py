@@ -1,4 +1,3 @@
-import asyncio
 import traceback
 import logging
 
@@ -41,7 +40,9 @@ class BlogOperation:
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                UPDATE blogs SET is_public = true , created_at = CURRENT_TIMESTAMP WHERE blog_id = $1;
+                UPDATE blogs
+                SET is_public = true , created_at = CURRENT_TIMESTAMP , last_modified = CURRENT_TIMESTAMP
+                WHERE blog_id = $1;
                 """
                 await conn.execute(sql, blog_id)
                 logger.info(f"博客-{blog_id}设置公开成功！")
@@ -64,7 +65,9 @@ class BlogOperation:
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                UPDATE blogs SET title = $1, content = $2, created_at = CURRENT_TIMESTAMP WHERE blog_id = $3;
+                UPDATE blogs
+                SET title = $1, content = $2, last_modified = CURRENT_TIMESTAMP
+                WHERE blog_id = $3;
                 """
                 await conn.execute(sql, title, content, blog_id)
                 logger.info(f"博客-{blog_id}更新成功！")
@@ -85,8 +88,8 @@ class BlogOperation:
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT title, content, username, views, likes, created_at 
-                FROM blogs 
+                SELECT title, content, username, views, likes, created_at, last_modified
+                FROM blogs
                 WHERE blog_id = $1 AND is_public = true;
                 """
                 blog_info = await conn.fetchrow(sql, blog_id)
@@ -101,6 +104,7 @@ class BlogOperation:
                     "views": blog_info.get("views"),  # 阅读量
                     "likes": blog_info.get("likes"),  # 点赞量
                     "created_at": blog_info.get("created_at"),  # 发布时间
+                    "last_modified": blog_info.get("last_modified"),  # 最后修改时间
                 }
                 logger.info(f"博客-{blog_id}读取成功，已经返回内容！")
             except Exception as e:
@@ -177,6 +181,7 @@ class BlogOperation:
 阅读量 - 默认为0
 点赞量 - 默认为0
 发布时间 - 默认为当前时间
+最后修改时间 - 默认为当前时间
 是否公开 - 默认为不公开，false
 """
 """
@@ -188,6 +193,7 @@ CREATE TABLE IF NOT EXISTS blogs (
     views int DEFAULT 0,
     likes int DEFAULT 0,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    last_modified timestamp DEFAULT CURRENT_TIMESTAMP,
     is_public boolean DEFAULT false,
     PRIMARY KEY (blog_id)
 );

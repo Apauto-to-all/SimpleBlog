@@ -73,3 +73,33 @@ async def unlike_blog(
     return JSONResponse(
         content={"success": True, "message": "取消点赞成功！"}, status_code=200
     )
+
+
+# 获取博客信息列表
+@router.get("/blog_list/{blog_type}")
+async def blog_list(
+    blog_type: Optional[str] = None,
+    start: int = Query(0, description="起始位置"),
+    count: int = Query(10, description="获取博客数量"),
+):
+    # 判断博客类型是否有效
+    if blog_type not in ["new", "hot", "best"]:
+        return JSONResponse(
+            content={"success": False, "message": "无效的博客类型"}, status_code=400
+        )
+    [
+        {
+            "blog_id": 1,
+            "title": "博客标题",
+            "content": "博客内容",
+            "username": "博客作者",
+            "views": "阅读量",
+            "likes": "点赞量",
+            "created_at": "发布时间",
+            "last_modified": "最后修改时间",
+            "tags": ["标签1", "标签2"],
+        },
+    ]
+    # 获取博客信息列表
+    blog_list = await blog_util.get_blogs_list(blog_type, start, count)
+    return JSONResponse(content=blog_list, status_code=200)

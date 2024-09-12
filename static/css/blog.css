@@ -78,8 +78,16 @@
     font-size: 19px;
 }
 
-#time::before {
+/* 发布时间图标 */
+#created-at::before {
     content: '🕒';
+    margin-right: 5px;
+    font-size: 19px;
+}
+
+/* 最后修改时间图标 */
+#last-modified::before {
+    content: '✏️';
     margin-right: 5px;
     font-size: 19px;
 }

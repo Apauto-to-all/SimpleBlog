@@ -18,10 +18,11 @@ from private_settings import (
 from .blogs_operate import BlogOperation
 from .tags_operate import TagsOperation
 from .users_operate import UserOperation
+from .get_blogs import GetBlogs
 
 
 # 数据库操作类
-class DatabaseOperation(BlogOperation, TagsOperation, UserOperation):
+class DatabaseOperation(BlogOperation, TagsOperation, UserOperation, GetBlogs):
     _instance = None  # 单例模式
     error_mun = 0  # 错误次数
 

@@ -61,6 +61,7 @@ async def create_tables():
     阅读量 - 默认为0
     点赞量 - 默认为0
     发布时间 - 默认为当前时间
+    最后修改时间 - 默认为当前时间
     是否公开 - 默认为不公开，false
     """
     sql = """
@@ -72,6 +73,7 @@ async def create_tables():
         views int DEFAULT 0,
         likes int DEFAULT 0,
         created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+        last_modified timestamp DEFAULT CURRENT_TIMESTAMP,
         is_public boolean DEFAULT false,
         PRIMARY KEY (blog_id)
     );
