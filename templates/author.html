@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %} {{ user_dict.nickname }} 的博客页面 {% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/static/css/login.css">
+<link rel="stylesheet" href="/static/css/blog-show.css">
+
+<div class="layui-container">
+    <!-- 判断用户是否存在 -->
+    {% if user_dict %}
+    <!-- 添加隐藏元素 -->
+    <div id="hidden-div">
+        <input type="hidden" id="hidden-username" value="{{ user_dict.username }}">
+    </div>
+    <!-- 显示用户的一些信息 -->
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h1>{{ user_dict.nickname }} 的全部博客</h1>
+        </div>
+        <div class="layui-card-body layui-bg-gray">
+            <i class="layui-icon layui-icon-username" style="color: #1e9fff;"></i>
+            用户名：{{ user_dict.username }}
+        </div>
+    </div>
+
+    <!-- 显示用户创作的博客 -->
+    <div class="layui-row" id="show_blogs">
+        <!-- 博客列表 -->
+    </div>
+    <!-- 导入获取作者博客列表的js -->
+    <script src="/static/js/author.js"></script>
+    {% else %}
+    <div class="layui-row">
+        <h1>该用户不存在</h1>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
