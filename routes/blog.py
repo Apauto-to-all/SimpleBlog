@@ -97,6 +97,7 @@ async def blog_list(
             "title": "博客标题",
             "content": "博客内容",
             "username": "博客作者",
+            "nickname": "博客作者昵称",
             "views": "阅读量",
             "likes": "点赞量",
             "created_at": "发布时间",

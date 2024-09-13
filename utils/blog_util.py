@@ -118,11 +118,13 @@ async def get_blogs_list(blog_type: str, start: int, count: int) -> list:
     if blogs_list:
         new_blogs_list = []
         for blog_info in blogs_list:
+            user_info = await blogs_operation.users_select(blog_info.get("username"))
             blog_dict = {
                 "blog_id": blog_info.get("blog_id"),  # 博客id
                 "title": blog_info.get("title"),  # 博客标题
                 "content": blog_info.get("content"),  # 博客内容
                 "username": blog_info.get("username"),  # 博客作者
+                "nickname": user_info.get("nickname"),  # 博客作者昵称
                 "views": blog_info.get("views"),  # 阅读量
                 "likes": blog_info.get("likes"),  # 点赞量
                 "created_at": blog_info.get("created_at").strftime(
