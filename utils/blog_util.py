@@ -119,6 +119,24 @@ async def get_blogs_list(blog_type: str, start: int, count: int) -> list:
     return await get_new_blogs_list(blogs_list)
 
 
+# 获取用户创作的博客信息列表
+async def get_user_blogs_list(
+    username: str, start: int, count: int, is_all: bool = False
+) -> list:
+    """
+    获取用户创作的博客信息列表
+    :param username: 用户名
+    :param start: 起始位置
+    :param count: 获取博客数量
+    :param is_all: 是否获取全部博客，只有用户自己可以获取全部博客，默认为False
+    :return: 博客信息列表
+    """
+    blogs_list = await blogs_operation.blogs_select_list_by_username(
+        username, start, count, is_all
+    )
+    return await get_new_blogs_list(blogs_list)
+
+
 # 放回新博客列表工具
 async def get_new_blogs_list(blogs_list: list) -> list:
     new_blogs_list = []
@@ -139,6 +157,7 @@ async def get_new_blogs_list(blogs_list: list) -> list:
                 "%Y-%m-%d %H:%M:%S"
             ),  # 最后修改时间
             "tags": await blogs_operation.tags_select(blog_info.get("blog_id")),
+            "is_public": blog_info.get("is_public"),
         }
         new_blogs_list.append(blog_dict)
     return new_blogs_list
