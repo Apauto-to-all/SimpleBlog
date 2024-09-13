@@ -19,13 +19,14 @@ main {
 
 /* 底部样式 */
 footer {
+  /* 离上面的距离 */
+  margin-top: 20px;
   /* 添加顶部边框 */
   border-top: 1px solid #ccc;
   /* 添加阴影 */
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
   /* 设置背景颜色 */
   background-color: white;
-  margin-top: auto;
   font-family: Arial, sans-serif;
   padding: 20px;
   text-indent: 20px;
