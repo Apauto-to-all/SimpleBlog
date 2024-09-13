@@ -11,11 +11,17 @@ class GetBlogs:
     async def blogs_select_list(self, blog_type: str, start: int, count: int) -> list:
         """
         获取博客信息
-        :param blog_type: 博客类型 ('new', 'hot', 'best')
-        new: 最新博客, hot: 热门博客 (一个月内, 阅读量 + 点赞量 * 9), best: 最佳博客 (阅读量 + 点赞量 * 9)
+        :param blog_type: 博客类型 ('new', 'hot', 'hot_month', 'best')
         :param start: 起始位置
         :param count: 获取博客数量
+        :param username: 用户名，默认为 None
         :return: 返回博客信息列表
+        """
+        """
+        new: 最新博客, 
+        hot: 热门博客 (一周热门博客, 阅读量 + 点赞量 * 9), 
+        hot_month: 一个月热门博客（一个月内热门博客, 阅读量 + 点赞量 * 9）,
+        best: 最佳博客 (阅读量 + 点赞量 * 9)
         """
         async with self.pool.acquire() as conn:
             try:
@@ -28,6 +34,15 @@ class GetBlogs:
                     LIMIT $1 OFFSET $2;
                     """
                 elif blog_type == "hot":
+                    sql = """
+                    SELECT blog_id, title, content, username, views, likes, created_at, last_modified
+                    FROM blogs
+                    WHERE is_public = true
+                    AND created_at > CURRENT_TIMESTAMP - interval '1 week'
+                    ORDER BY (views + likes * 9) DESC
+                    LIMIT $1 OFFSET $2;
+                    """
+                elif blog_type == "hot_month":
                     sql = """
                     SELECT blog_id, title, content, username, views, likes, created_at, last_modified
                     FROM blogs

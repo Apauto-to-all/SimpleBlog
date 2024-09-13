@@ -86,7 +86,7 @@ async def blog_list(
     if (
         not isinstance(start, int)
         and not isinstance(count, int)
-        and blog_type not in ["new", "hot", "best"]
+        and blog_type not in ["new", "hot", "hot_month", "best"]
     ):
         return JSONResponse(
             content={"success": False, "message": "无效的博客类型"}, status_code=400

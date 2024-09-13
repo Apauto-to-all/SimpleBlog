@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory="templates")
 async def index(request: Request, blog_type: Optional[str] = None):
     # 如果有博客类型参数
     if blog_type not in ["new", "hot", "best"]:
-        blog_type = "hot"
+        blog_type = "hot_month"
     return templates.TemplateResponse(
         "index.html",
         {"request": request, "blog_type": blog_type},
