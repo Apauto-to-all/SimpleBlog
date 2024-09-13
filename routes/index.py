@@ -18,5 +18,12 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/index", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+@router.get("/index/{blog_type}", response_class=HTMLResponse)
+async def index(request: Request, blog_type: Optional[str] = None):
+    # 如果有博客类型参数
+    if blog_type not in ["new", "hot", "best"]:
+        blog_type = "hot"
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "blog_type": blog_type},
+    )

@@ -18,23 +18,67 @@
     </div>
 
     <div class="layui-container">
-        <div class="layui-row">
-            <div class="layui-card blog-card" onclick="window.location.href='/blog/1'">
-                <div class="layui-card-header">
-                    <h2 class="blog-title">博客标题</h2>
-                </div>
-                <div class="layui-card-body">
-                    <div class="blog-meta">
-                        <span><i class="layui-icon layui-icon-read"></i> 阅读量</span>
-                        <span><i class="layui-icon layui-icon-praise"></i> 点赞量</span>
-                        <span><i class="layui-icon layui-icon-username"></i> 博客作者</span>
-                    </div>
-                    <div class="blog-content">
-                        博客内容预览……
-                    </div>
-                </div>
-            </div>
+        <div class="layui-row" id="show_blogs">
+            <!-- 博客列表 -->
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            // 当前博客类型，new-最新，hot-热门，best-精选
+            const blogType = `{{ blog_type }}`;
+            const start = 0;
+            const count = 10;
+            // 调用获取博客列表函数
+            fetchBlogList(blogType, start, count);
+
+            // 获取博客列表
+            async function fetchBlogList(blogType, start = 0, count = 10) {
+                try {
+                    const response = await fetch(`/blog_list/${blogType}?start=${start}&count=${count}`);
+                    if (!response.ok) {
+                        layer.msg('获取博客列表失败', { icon: 2 });
+                        return;
+                    }
+                    const blogList = await response.json();
+                    displayBlogs(blogList);
+                } catch (error) {
+                    layer.msg('获取博客列表失败', { icon: 2 });
+                }
+            }
+
+            // 显示博客列表
+            function displayBlogs(blogList) {
+                const showBlogs = document.getElementById('show_blogs');
+                showBlogs.innerHTML = ''; // 清空现有内容
+
+                blogList.forEach(blog => {
+                    const blogCard = document.createElement('div');
+                    blogCard.className = 'layui-card blog-card';
+                    blogCard.onclick = () => window.location.href = `/blog/${blog.blog_id}`;
+
+                    blogCard.innerHTML = `
+                        <div class="layui-card-header">
+                            <h2 class="blog-title">${blog.title}</h2>
+                        </div>
+                        <div class="layui-card-body">
+                            <div class="blog-meta">
+                                <span><i class="layui-icon layui-icon-read"></i> ${blog.views} 阅读量</span>
+                                <span><i class="layui-icon layui-icon-praise"></i> ${blog.likes} 点赞量</span>
+                                <span><i class="layui-icon layui-icon-username"></i> ${blog.nickname}</span>
+                            </div>
+                            <div class="blog-content">
+                                ${blog.content}
+                            </div>
+                        </div>
+                        `;
+                    showBlogs.appendChild(blogCard);
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}
