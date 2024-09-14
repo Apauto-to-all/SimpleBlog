@@ -38,8 +38,12 @@ class GetBlogs:
                     SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
                     FROM blogs
                     WHERE is_public = true
-                    AND created_at > CURRENT_TIMESTAMP - interval '1 week'
-                    ORDER BY (views + likes * 9) DESC
+                    ORDER BY 
+                        CASE 
+                            WHEN created_at > CURRENT_TIMESTAMP - interval '1 week' THEN 1
+                            ELSE 2
+                        END,
+                        (views + likes * 9) DESC
                     LIMIT $1 OFFSET $2;
                     """
                 elif blog_type == "hot_month":
@@ -47,8 +51,12 @@ class GetBlogs:
                     SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
                     FROM blogs
                     WHERE is_public = true
-                    AND created_at > CURRENT_TIMESTAMP - interval '1 month'
-                    ORDER BY (views + likes * 9) DESC
+                    ORDER BY 
+                        CASE 
+                            WHEN created_at > CURRENT_TIMESTAMP - interval '1 month' THEN 1
+                            ELSE 2
+                        END,
+                        (views + likes * 9) DESC
                     LIMIT $1 OFFSET $2;
                     """
                 elif blog_type == "best":
