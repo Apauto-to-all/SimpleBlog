@@ -11,7 +11,7 @@ layui.use(['layer'], function () {
         formData.append('tags', tags);
         formData.append('is_public', is_public);
 
-        const response = await fetch(`/user/write_blog`, {
+        const response = await fetch(`/write_blog`, {
             method: 'POST',
             body: formData,
         });

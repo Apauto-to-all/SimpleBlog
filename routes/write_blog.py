@@ -55,7 +55,7 @@ async def write_blog(
     return RedirectResponse(f"/user/{username}/blog", status_code=302)
 
 
-@router.post("/user/revise_blog/{blog_id}")
+@router.post("/revise_blog/{blog_id}")
 async def write_blog(
     access_token: Optional[str] = Cookie(None),
     blog_id: Optional[int] = None,
@@ -78,7 +78,7 @@ async def write_blog(
     return {"error": "用户验证失败，或者博客修改失败！"}
 
 
-@router.post("/user/write_blog")
+@router.post("/write_blog")
 async def write_blog(
     access_token: Optional[str] = Cookie(None),
     markdown_content: Optional[str] = Form(...),
