@@ -29,7 +29,7 @@ async def write_blog(
     if user_dict and access_token and await login_util.is_login(access_token, username):
         return templates.TemplateResponse("write_blog.html", {"request": request})
 
-    return RedirectResponse("/index", status_code=302)
+    return RedirectResponse(f"/user/{username}/blog", status_code=302)
 
 
 @router.get("/user/{username}/blog/revise/{blog_id}", response_class=HTMLResponse)
@@ -40,10 +40,42 @@ async def write_blog(
     blog_id: Optional[int] = None,
 ):
     user_dict = await login_util.get_user_dict(username)
-    if user_dict and access_token and await login_util.is_login(access_token, username):
-        return templates.TemplateResponse("write_blog.html", {"request": request})
+    if (
+        user_dict
+        and access_token
+        and await login_util.is_login(access_token, username)
+        and blog_id
+    ):
+        # 获取博客所有信息
+        blog_dict = await blog_util.get_blog_info(blog_id)
+        if blog_dict:
+            return templates.TemplateResponse(
+                "revise_blog.html", {"request": request, "blog_dict": blog_dict}
+            )
+    return RedirectResponse(f"/user/{username}/blog", status_code=302)
 
-    return RedirectResponse("/index", status_code=302)
+
+@router.post("/user/revise_blog/{blog_id}")
+async def write_blog(
+    access_token: Optional[str] = Cookie(None),
+    blog_id: Optional[int] = None,
+    markdown_content: Optional[str] = Form(...),
+    title: Optional[str] = Form(...),
+    tags: Optional[str] = Form(...),
+    is_public: Optional[bool] = Form(...),
+):
+    if access_token:
+        username = await login_util.get_user_from_jwt(access_token)
+        if username and await login_util.is_login(access_token, username):
+            result = await blog_util.revise_blog(
+                blog_id, title, markdown_content, tags, is_public
+            )
+            if result:
+                if is_public:
+                    return RedirectResponse(f"/blog/{blog_id}", status_code=302)
+                return RedirectResponse(f"/user/{username}/blog", status_code=302)
+    # 跳转自定义错误页面
+    return {"error": "用户验证失败，或者博客修改失败！"}
 
 
 @router.post("/user/write_blog")

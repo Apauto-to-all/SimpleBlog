@@ -78,6 +78,40 @@ async def write_blog(
     return blog_id
 
 
+# 更新博客
+async def revise_blog(
+    blog_id: int, title: str, content: str, tags: str, is_public: bool
+) -> bool:
+    """
+    更新博客
+    :param blog_id: 博客id
+    :param title: 博客标题
+    :param content: 博客内容
+    :param tags: 博客标签
+    :param is_public: 是否公开
+    :return: 更新成功返回True，更新失败返回False
+    """
+    if (
+        not blog_id
+        or not isinstance(blog_id, int)
+        or not title
+        or not content
+        or not tags
+        or not is_public
+        or not isinstance(is_public, bool)
+    ):
+        logger.error("参数错误！")
+        return False
+    # 切割标签为列表，中文逗号或英文逗号，都可以
+    tags_list = tags.replace("，", ",").split(",")
+    await blogs_operation.blogs_update(blog_id, title, content)
+    await blogs_operation.tags_insert(tags_list, blog_id)
+    if is_public:
+        await blogs_operation.blogs_set_public(blog_id)
+
+    return True
+
+
 # 博客浏览量加一
 async def blog_views_add_one(blog_id: int):
     """
