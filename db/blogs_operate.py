@@ -30,7 +30,7 @@ class BlogOperation:
                 return None
         return blog_id
 
-    # 设置博客公开，并更新发布时间
+    # 设置博客公开，并更新发布时间，只有草稿博客才能设置公开
     async def blogs_set_public(self, blog_id: int):
         """
         设置博客公开
@@ -42,7 +42,7 @@ class BlogOperation:
                 sql = """
                 UPDATE blogs
                 SET is_public = true , created_at = CURRENT_TIMESTAMP , last_modified = CURRENT_TIMESTAMP
-                WHERE blog_id = $1;
+                WHERE blog_id = $1 AND is_public != true;
                 """
                 await conn.execute(sql, blog_id)
                 logger.info(f"博客-{blog_id}设置公开成功！")
