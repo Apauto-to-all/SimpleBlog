@@ -65,6 +65,7 @@ class TagsOperation:
     async def tags_select_view(self) -> dict:
         """
         查询标签视图，获取标签列表，包含标签和对应的博客数量
+        标签视图按照博客数量降序排列
         :return: 查询成功返回标签列表，查询失败返回{}
         """
         async with self.pool.acquire() as conn:
@@ -83,26 +84,33 @@ class TagsOperation:
                 return {}
         return tags_dict if tags_dict else {}
 
-    # 查询某个标签下的所有博客
-    async def tags_select_blog(self, tag: str):
+    # 查询某个标签下的所有博客，只保留公开博客
+    async def tags_select_blog(self, tag: str, strat: int, count: int):
         """
-        查询某个标签下的所有博客
+        查询某个标签下的所有博客，按照发布时间倒序排列，分页查询
         :param tag: 标签
+        :param strat: 起始位置
+        :param count: 获取博客数量
         :return: 查询成功返回博客列表，查询失败返回[]
         """
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT blog_id FROM tags WHERE tag = $1;
+                SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
+                FROM blogs
+                WHERE blog_id IN (SELECT blog_id FROM tags WHERE tag = $1) 
+                AND is_public = True
+                ORDER BY created_at DESC
+                LIMIT $2 OFFSET $3;
                 """
-                blogs = await conn.fetch(sql, tag)
-                logger.info(f"标签-{tag}查询博客成功！")
+                blogs_list = await conn.fetch(sql, tag, count, strat)
+                logger.info(f"标签-{tag}-查询博客成功！")
             except Exception as e:
                 error_info = traceback.format_exc()
                 logger.error(error_info)
                 logger.error(e)
                 return []
-        return blogs if blogs else []
+        return blogs_list if blogs_list else []
 
 
 """

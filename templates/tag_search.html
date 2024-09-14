@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - 博客网站{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/static/css/blog-show.css">
+
+{% if tag %}
+<div>
+    <h1 style="padding: 10px;">搜索标签: {{ tag }}</h1>
+    <!-- 标签搜索 -->
+    <div id="hidden-div">
+        <input type="hidden" id="tag" value="{{ tag }}">
+    </div>
+    <div class="layui-container">
+        <div class="layui-row" id="show_blogs">
+            <!-- 博客列表 -->
+        </div>
+    </div>
+</div>
+
+<!-- 导入显示博客列表的js -->
+<script src="/static/js/tag_search.js"></script>
+
+{% else %}
+
+<h1>未提供标签</h1>
+
+{% endif %}
+
+{% endblock %}

@@ -10,7 +10,7 @@ import config  # 导入配置文件
 from typing import Optional
 import logging
 from db.connection import DatabaseOperation
-from routes import index, blog, login_register, write_blog, user, get_blog, author
+from routes import index, blog, login_register, write_blog, user, get_blog, author, tag
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
@@ -42,7 +42,9 @@ app.mount("/layui", StaticFiles(directory="layui"), name="layui")  # layui 静�
 
 @app.get("/favicon.ico")  # 获取网站图标
 async def get_favicon():
-    return FileResponse("static/favicon.ico", media_type="image/x-icon")  # 返回网站图标
+    return FileResponse(
+        "/static/favicon.ico", media_type="image/x-icon"
+    )  # 返回网站图标
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -57,6 +59,7 @@ app.include_router(write_blog.router)  # 注册写博客路由
 app.include_router(user.router)  # 注册用户路由
 app.include_router(get_blog.router)  # 注册获取博客路由
 app.include_router(author.router)  # 注册作者路由
+app.include_router(tag.router)  # 注册标签路由
 
 if __name__ == "__main__":
     logger.info("启动 FastAPI 服务")

@@ -34,7 +34,8 @@
     <div class="blog-tags">
       <span>文章标签：</span>
       {% for tag in blog_dict.tags %}
-      <span class="layui-btn layui-btn-sm">{{ tag }}</span>
+      <button class="layui-btn layui-btn-sm" onclick="window.location.href='/tag/search?tag={{ tag }}'">{{ tag
+        }}</button>
       {% endfor %}
     </div>
   </div>
