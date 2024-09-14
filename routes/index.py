@@ -11,6 +11,8 @@ from typing import Optional  # 功能：用于声明可选参数
 
 import logging  # 功能：用于记录日志
 
+from utils import tag_util
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
@@ -23,7 +25,8 @@ async def index(request: Request, blog_type: Optional[str] = None):
     # 如果有博客类型参数
     if blog_type not in ["new", "hot", "best"]:
         blog_type = "hot_month"
+    tags_list = await tag_util.get_best_tags()
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "blog_type": blog_type},
+        {"request": request, "blog_type": blog_type, "tags_list": tags_list},
     )

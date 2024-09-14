@@ -22,14 +22,6 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-# 获取最佳的tag标签，前10个
-@router.get("/get_best_tags")
-async def get_best_tags():
-    # 获取最佳的tag标签，前10个
-    tags_list = await tag_util.get_best_tags()
-    return JSONResponse(content=tags_list, status_code=200)
-
-
 # 标签搜索列表
 @router.get("/tag/search", response_class=HTMLResponse)
 async def tag_search(

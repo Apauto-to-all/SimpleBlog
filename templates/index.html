@@ -14,6 +14,10 @@
             <a href="/index/new">最新</a>
             <a href="/index/hot">热门</a>
             <a href="/index/best">精选</a>
+            <!-- 最多标签跳转连接 -->
+            {% for tag in tags_list %}
+            <a href="/tag/search?tag={{ tag }}">{{ tag }}</a>
+            {% endfor %}
         </span>
     </div>
 
