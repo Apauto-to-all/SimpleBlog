@@ -28,7 +28,7 @@ async def blog(
     if blog_id:
         # 获取博客所有信息
         blog_dict = await blog_util.get_blog_info(blog_id)
-        if blog_dict:
+        if blog_dict and blog_dict.get("is_public") == True:
             # 博客浏览量加一
             await blog_util.blog_views_add_one(blog_id)
             # 返回页面

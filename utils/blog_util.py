@@ -3,15 +3,13 @@ from db.connection import DatabaseOperation
 import logging
 from datetime import datetime
 
-from routes import blog
-
 logger = logging.getLogger(__name__)
 
 # 创建一个数据库操作对象
 blogs_operation = DatabaseOperation()
 
 
-# 通过博客的id获取博客的信息
+# 通过博客的id获取博客的信息，无论是否公开
 async def get_blog_info(blog_id: int) -> dict:
     """
     通过博客的id获取博客的信息
@@ -39,6 +37,7 @@ async def get_blog_info(blog_id: int) -> dict:
             "created_at": "2021-01-01 00:00:00",  # 发布时间
             "last_modified": "2021-01-01 00:00:00",  # 最后修改时间
             "tags": ["标签1", "标签2"],
+            "is_public": True or False,
         }
         return blog_info
 

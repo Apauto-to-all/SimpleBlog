@@ -78,19 +78,19 @@ class BlogOperation:
                 return False
         return True
 
-    # 读取博客内容，标题，作者，阅读量，点赞量，发布时间，如果不公开返回None
+    # 读取博客内容，标题，作者，阅读量，点赞量，发布时间，最后修改时间，是否公开
     async def blogs_select(self, blog_id: int):
         """
-        读取博客内容，标题，作者，阅读量，点赞量，发布时间
+        读取博客内容，标题，作者，阅读量，点赞量，发布时间，最后修改时间，是否公开
         :param blog_id: 博客id
-        :return: 返回博客信息，如果博客不公开返回{}
+        :return: 返回博客信息，如果博客不存在返回空字典
         """
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT title, content, username, views, likes, created_at, last_modified
+                SELECT title, content, username, views, likes, created_at, last_modified, is_public
                 FROM blogs
-                WHERE blog_id = $1 AND is_public = true;
+                WHERE blog_id = $1;
                 """
                 blog_info = await conn.fetchrow(sql, blog_id)
                 if not blog_info:
@@ -105,6 +105,7 @@ class BlogOperation:
                     "likes": blog_info.get("likes"),  # 点赞量
                     "created_at": blog_info.get("created_at"),  # 发布时间
                     "last_modified": blog_info.get("last_modified"),  # 最后修改时间
+                    "is_public": blog_info.get("is_public"),  # 是否公开
                 }
                 logger.info(f"博客-{blog_id}读取成功，已经返回内容！")
             except Exception as e:
