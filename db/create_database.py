@@ -72,8 +72,8 @@ async def create_tables():
         username varchar(15) REFERENCES users(username) not null,
         views int DEFAULT 0,
         likes int DEFAULT 0,
-        created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-        last_modified timestamp DEFAULT CURRENT_TIMESTAMP,
+        created_at timestamptz DEFAULT current_timestamp,
+        last_modified timestamptz DEFAULT current_timestamp,
         is_public boolean DEFAULT false,
         PRIMARY KEY (blog_id)
     );

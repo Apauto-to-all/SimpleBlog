@@ -1,12 +1,15 @@
 # 博客的工具
 from db.connection import DatabaseOperation
 import logging
-from datetime import datetime
+import pytz
 
 logger = logging.getLogger(__name__)
 
 # 创建一个数据库操作对象
 blogs_operation = DatabaseOperation()
+
+# 定义中国时区（UTC+8）
+china_tz = pytz.timezone("Asia/Shanghai")
 
 
 # 通过博客的id获取博客的信息，无论是否公开
@@ -22,9 +25,13 @@ async def get_blog_info(blog_id: int) -> dict:
         blog_info["tags"] = tags_list
         user_info = await blogs_operation.users_select(blog_info.get("username"))
         blog_info["nickname"] = user_info.get("nickname")
-        blog_info["created_at"] = blog_info["created_at"].strftime("%Y-%m-%d %H:%M:%S")
-        blog_info["last_modified"] = blog_info["last_modified"].strftime(
-            "%Y-%m-%d %H:%M:%S"
+        blog_info["created_at"] = (
+            blog_info["created_at"].astimezone(china_tz).strftime("%Y-%m-%d %H:%M:%S")
+        )
+        blog_info["last_modified"] = (
+            blog_info["last_modified"]
+            .astimezone(china_tz)
+            .strftime("%Y-%m-%d %H:%M:%S")
         )
         {
             "blog_id": 1,  # 博客id
@@ -182,12 +189,12 @@ async def get_new_blogs_list(blogs_list: list) -> list:
             "nickname": user_info.get("nickname"),  # 博客作者昵称
             "views": blog_info.get("views"),  # 阅读量
             "likes": blog_info.get("likes"),  # 点赞量
-            "created_at": blog_info.get("created_at").strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),  # 发布时间
-            "last_modified": blog_info.get("last_modified").strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),  # 最后修改时间
+            "created_at": blog_info.get("created_at")
+            .astimezone(china_tz)
+            .strftime("%Y-%m-%d %H:%M:%S"),  # 发布时间
+            "last_modified": blog_info.get("last_modified")
+            .astimezone(china_tz)
+            .strftime("%Y-%m-%d %H:%M:%S"),  # 最后修改时间
             "tags": await blogs_operation.tags_select(blog_info.get("blog_id")),
             "is_public": blog_info.get("is_public"),
         }
