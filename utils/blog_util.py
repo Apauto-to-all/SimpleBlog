@@ -105,7 +105,9 @@ async def revise_blog(
     tags_list = tags.replace("，", ",").split(",")
     await blogs_operation.blogs_update(blog_id, title, content)
     await blogs_operation.tags_insert(tags_list, blog_id)
-    if is_public:
+    blog_info = await get_blog_info(blog_id)
+    or_is_public = blog_info.get("is_public")
+    if is_public and not or_is_public:
         await blogs_operation.blogs_set_public(blog_id)
 
     return True
