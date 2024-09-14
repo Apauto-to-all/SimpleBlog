@@ -49,6 +49,7 @@ async def write_blog(
         # 获取博客所有信息
         blog_dict = await blog_util.get_blog_info(blog_id)
         if blog_dict:
+            blog_dict["tags_str"] = ",".join(blog_dict["tags"])
             return templates.TemplateResponse(
                 "revise_blog.html", {"request": request, "blog_dict": blog_dict}
             )

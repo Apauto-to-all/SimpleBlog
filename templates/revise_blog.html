@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %} 写博客 {% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="/static/css/write_blog.css">
+<script src="/static/js/revise_blog.js"></script>
+<!-- 导入Markdown样式 -->
+<link rel="stylesheet" href="/static/css/github-markdown-light.css">
+
+<div class="container">
+    <!-- 输入标题 -->
+    <div class="title-input">
+        <label for="title">标题：</label>
+        <input id="title" type="text" placeholder="输入标题，最多50字符" maxlength="50" value="{{ blog_dict.title }}">
+    </div>
+    <!-- 显示内容 -->
+    <div class="write-blog">
+        <!-- 编辑器 -->
+        <div class="editor">
+            <textarea id="markdown_content">{{ blog_dict.content }}</textarea>
+        </div>
+
+        <!-- 博客内容 -->
+        <div class="preview">
+            <div id="md-content" class="markdown-body preview-show">
+                <div style="user-select: none;">预览内容将显示在这里</div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加标签 -->
+    <div class="tag-input">
+        <label for="tag">标签：</label>
+        <input id="tags" type="text" placeholder="添加标签，用逗号隔开，至少1个标签" value="{{ blog_dict.tags_str }}">
+    </div>
+    <!-- 发布草稿按钮，固定底部 -->
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="text-align: right; margin-right: 60px;">
+            <!-- 如果博客是公开的，不提供保存草稿功能 -->
+            {% if not blog_dict.is_public %}
+            <button class="layui-btn layui-btn-normal layui-btn-lg"
+                onclick="submitBlog(false, '{{ blog_dict.blog_id }}')">
+                <i class="layui-icon layui-icon-template-1"></i> 保存草稿
+            </button>
+            {% endif %}
+            <button class="layui-btn layui-btn-primary layui-btn-lg"
+                onclick="submitBlog(true, '{{ blog_dict.blog_id }}')">
+                <i class="layui-icon layui-icon-release"></i> 发布内容
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
+<!-- 导入自动转化Markdown的js -->
+<script src="/static/js/markdown_converter.js"></script>
+
+{% endblock %}

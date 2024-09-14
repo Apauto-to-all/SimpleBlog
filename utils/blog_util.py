@@ -97,7 +97,6 @@ async def revise_blog(
         or not title
         or not content
         or not tags
-        or not is_public
         or not isinstance(is_public, bool)
     ):
         logger.error("参数错误！")
