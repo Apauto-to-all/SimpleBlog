@@ -38,7 +38,7 @@ async def user(
             },
         )
 
-    return RedirectResponse("/index", status_code=302)
+    return RedirectResponse("/user_login", status_code=302)
 
 
 @router.get("/user/{username}/blog", response_class=HTMLResponse)
@@ -59,7 +59,7 @@ async def user_blog(
             },
         )
 
-    return RedirectResponse("/index", status_code=302)
+    return RedirectResponse("/user_login", status_code=302)
 
 
 # API获取用户信息以及跳转链接
