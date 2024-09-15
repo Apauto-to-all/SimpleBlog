@@ -1,32 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}首页 - 博客网站{% endblock %}
+{% block title %}{{ tag }} 标签搜索页面{% endblock %}
 
 {% block content %}
 
 <link rel="stylesheet" href="/static/css/blog-show.css">
 
-{% if tag %}
+<!-- 添加一个搜索标签框，用于搜索标签 -->
 <div>
-    <h1 style="padding: 10px;">搜索标签: {{ tag }}</h1>
-    <!-- 标签搜索 -->
-    <div id="hidden-div">
-        <input type="hidden" id="tag" value="{{ tag }}">
-    </div>
-    <div class="layui-container">
-        <div class="layui-row" id="show_blogs">
-            <!-- 博客列表 -->
+    <center>
+        <form class="layui-form" action="/tag/search" method="get">
+            <div class="layui-input-inline" style="width: 600px; font-size: large;">
+                <input type="text" name="tag" required lay-verify="required" placeholder="请输入标签" autocomplete="off"
+                    class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn" lay-submit>搜索</button>
+            </div>
+        </form>
+    </center>
+
+    {% if tag %}
+    <div>
+        <h1 style="padding: 10px;">搜索标签: {{ tag }}</h1>
+        <!-- 标签搜索 -->
+        <div id="hidden-div">
+            <input type="hidden" id="tag" value="{{ tag }}">
+        </div>
+        <div class="layui-container">
+            <div class="layui-row" id="show_blogs">
+                <!-- 博客列表 -->
+            </div>
         </div>
     </div>
+
+    <!-- 导入显示博客列表的js -->
+    <script src="/static/js/tag_search.js"></script>
+
+    {% else %}
+
+    <h1>未提供标签</h1>
+
+    {% endif %}
 </div>
 
-<!-- 导入显示博客列表的js -->
-<script src="/static/js/tag_search.js"></script>
 
-{% else %}
-
-<h1>未提供标签</h1>
-
-{% endif %}
 
 {% endblock %}
