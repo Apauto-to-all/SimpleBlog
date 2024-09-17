@@ -98,7 +98,11 @@ class TagsOperation:
                 sql = """
                 SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
                 FROM blogs
-                WHERE blog_id IN (SELECT blog_id FROM tags WHERE tag = $1) 
+                WHERE blog_id IN (
+                SELECT blog_id 
+                FROM tags 
+                WHERE tag LIKE '%' || $1 || '%'
+                ) 
                 AND is_public = True
                 ORDER BY created_at DESC
                 LIMIT $2 OFFSET $3;
