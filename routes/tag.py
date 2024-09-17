@@ -45,7 +45,8 @@ async def tag_search_list(
         return JSONResponse(
             content={"success": False, "message": "参数错误"}, status_code=400
         )
-
+    # 分割标签
+    tags_list = tag.replace("，", ",").split(",")
     # 获取标签搜索列表
-    blog_list = await tag_util.get_tag_search_list(tag, start, count)
+    blog_list = await tag_util.get_tag_search_list(tags_list, start, count)
     return JSONResponse(content=blog_list, status_code=200)

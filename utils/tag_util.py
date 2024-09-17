@@ -24,15 +24,15 @@ async def get_best_tags() -> list:
     return tags_list[:10]
 
 
-async def get_tag_search_list(tag: str, start: int, count: int) -> list:
+async def get_tag_search_list(tags_list: list, start: int, count: int) -> list:
     """
     获取标签搜索列表
-    :param tag: 标签
+    :param tags_list: 标签列表
     :param start: 起始位置
     :param count: 获取博客数量
     :return: 返回博客信息列表
     """
-    blog_list = await blogs_operation.tags_select_blog(tag, start, count)
+    blog_list = await blogs_operation.tags_select_blog(tags_list, start, count)
     [
         {
             "blog_id": 1,  # 博客id

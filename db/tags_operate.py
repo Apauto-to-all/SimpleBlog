@@ -85,30 +85,43 @@ class TagsOperation:
         return tags_dict if tags_dict else {}
 
     # 查询某个标签下的所有博客，只保留公开博客
-    async def tags_select_blog(self, tag: str, strat: int, count: int):
+    async def tags_select_blog(self, tags_list: list, strat: int, count: int):
         """
         查询某个标签下的所有博客，按照发布时间倒序排列，分页查询
-        :param tag: 标签
+        :param tags_list: 标签列表
         :param strat: 起始位置
         :param count: 获取博客数量
         :return: 查询成功返回博客列表，查询失败返回[]
         """
         async with self.pool.acquire() as conn:
             try:
-                sql = """
-                SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
-                FROM blogs
-                WHERE blog_id IN (
-                SELECT blog_id 
-                FROM tags 
-                WHERE tag LIKE '%' || $1 || '%'
-                ) 
-                AND is_public = True
-                ORDER BY created_at DESC
-                LIMIT $2 OFFSET $3;
+                # 构建动态 SQL 查询
+                tag_conditions = " AND ".join(
+                    [
+                        f"t{i}.tag LIKE '%' || ${i+1} || '%'"
+                        for i in range(len(tags_list))
+                    ]
+                )
+                join_conditions = " ".join(
+                    [
+                        f"JOIN tags t{i} ON b.blog_id = t{i}.blog_id"
+                        for i in range(len(tags_list))
+                    ]
+                )
+
+                sql = f"""
+                SELECT b.blog_id, b.title, b.content, b.username, b.views, b.likes, b.created_at, b.last_modified, b.is_public
+                FROM blogs b
+                {join_conditions}
+                WHERE {tag_conditions}
+                AND b.is_public = True
+                ORDER BY b.created_at DESC
+                LIMIT ${len(tags_list) + 1} OFFSET ${len(tags_list) + 2};
                 """
-                blogs_list = await conn.fetch(sql, tag, count, strat)
-                logger.info(f"标签-{tag}-查询博客成功！")
+
+                # 执行查询
+                blogs_list = await conn.fetch(sql, *tags_list, count, strat)
+                logger.info(f"标签-{tags_list}-查询博客成功！")
             except Exception as e:
                 error_info = traceback.format_exc()
                 logger.error(error_info)
