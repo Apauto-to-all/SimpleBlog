@@ -30,3 +30,8 @@ async def index(request: Request, blog_type: Optional[str] = None):
         "index.html",
         {"request": request, "blog_type": blog_type, "tags_list": tags_list},
     )
+
+
+@router.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request})
