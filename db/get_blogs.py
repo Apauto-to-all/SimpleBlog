@@ -117,6 +117,34 @@ class GetBlogs:
                 return []
         return blog_list if blog_list else []
 
+    # 关键字搜索博客
+    async def blogs_search(self, keyword: str, start: int, count: int):
+        """
+        关键字搜索博客
+        :param keyword: 关键字
+        :param start: 起始位置
+        :param count: 获取博客数量
+        :return: 返回博客信息列表
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                sql = """
+                SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
+                FROM blogs
+                WHERE is_public = true
+                AND (title LIKE '%' || $1 || '%' OR content LIKE '%' || $1 || '%')
+                ORDER BY created_at DESC
+                LIMIT $2 OFFSET $3;
+                """
+                blog_list = await conn.fetch(sql, keyword, count, start)
+                logger.info(f"关键字搜索博客成功！")
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                return []
+        return blog_list if blog_list else []
+
 
 """
 博客表：

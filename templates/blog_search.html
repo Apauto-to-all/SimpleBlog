@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}博客搜索页面{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/static/css/blog-show.css">
+
+<!-- 添加一个搜索博客框，用于搜索博客 -->
+<div>
+    <center>
+        <form class="layui-form" action="/blog_search" method="get">
+            <div class="layui-input-inline" style="width: 600px; font-size: large;">
+                <input type="text" name="keyword" required lay-verify="required" placeholder="请输入关键词" autocomplete="off"
+                    class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn" lay-submit>搜索</button>
+            </div>
+        </form>
+    </center>
+
+    {% if keyword %}
+    <div>
+        <h1 style="padding: 10px;">搜索关键词: {{ keyword }}</h1>
+        <!-- 博客搜索 -->
+        <div id="hidden-div">
+            <input type="hidden" id="keyword" value="{{ keyword }}">
+        </div>
+        <div class="layui-container">
+            <div class="layui-row" id="show_blogs">
+                <!-- 博客列表 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 导入显示博客列表的js -->
+    <script src="/static/js/blog_search.js"></script>
+
+    {% else %}
+
+    <h1>未提供关键词</h1>
+
+    {% endif %}
+</div>
+
+{% endblock %}

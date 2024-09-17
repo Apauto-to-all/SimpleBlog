@@ -200,3 +200,16 @@ async def get_new_blogs_list(blogs_list: list) -> list:
         }
         new_blogs_list.append(blog_dict)
     return new_blogs_list
+
+
+# 获取博客搜索列表
+async def get_blog_search_list(keyword: str, start: int, count: int) -> list:
+    """
+    获取博客搜索列表
+    :param keyword: 关键字
+    :param start: 起始位置
+    :param count: 获取博客数量
+    :return: 返回博客信息列表
+    """
+    blog_list = await blogs_operation.blogs_search(keyword, start, count)
+    return await get_new_blogs_list(blog_list)
