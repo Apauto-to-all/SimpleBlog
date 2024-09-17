@@ -42,9 +42,7 @@ app.mount("/layui", StaticFiles(directory="layui"), name="layui")  # layui 静�
 
 @app.get("/favicon.ico")  # 获取网站图标
 async def get_favicon():
-    return FileResponse(
-        "/static/favicon.ico", media_type="image/x-icon"
-    )  # 返回网站图标
+    return FileResponse("static/favicon.ico", media_type="image/x-icon")  # 返回网站图标
 
 
 @app.get("/", response_class=HTMLResponse)
