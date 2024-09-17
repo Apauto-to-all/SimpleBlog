@@ -87,7 +87,7 @@
             // 创建博客卡片
             function createBlogCard(blog) {
                 return `
-                <div class="layui-card blog-card" onclick="window.location.href='/user/${blog.username}/blog/revise/${blog.blog_id}'">
+                <div class="layui-card blog-card"">
                     <div class="layui-card-header">
                         <h2 class="blog-title">${blog.title}</h2>
                     </div>
@@ -97,6 +97,10 @@
                             <span><i class="layui-icon layui-icon-praise"></i> ${blog.likes} 点赞量</span>
                             <span><i class="layui-icon layui-icon-username"></i> ${blog.nickname}</span>
                             ${blog.is_public ? '' : '<span style="color: red;"><i class="layui-icon layui-icon-close"></i> 未公开</span>'}
+                        </div>
+                        <div class="blog-button" style="text-align: right;">
+                            ${blog.is_public ? `<button class="layui-btn layui-btn-primary layui-btn-sm" onclick="window.location.href='/blog/${blog.blog_id}'">查看博客</button>` : ""}
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="window.location.href='/user/${blog.username}/blog/revise/${blog.blog_id}'">编辑博客</button>
                         </div>
                         <div class="blog-content">
                             ${blog.content}
