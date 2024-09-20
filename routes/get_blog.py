@@ -28,6 +28,8 @@ async def blog_list(
     if (
         not isinstance(start, int)
         and not isinstance(count, int)
+        and start < 0
+        and count <= 0
         and blog_type not in ["new", "hot", "hot_month", "best"]
     ):
         return JSONResponse(
@@ -68,6 +70,8 @@ async def user_blog_list(
         and not isinstance(start, int)
         and not isinstance(count, int)
         and not isinstance(is_all, bool)
+        and start < 0
+        and count <= 0
     ):
         return JSONResponse(
             content={"success": False, "message": "无效的用户名"}, status_code=400

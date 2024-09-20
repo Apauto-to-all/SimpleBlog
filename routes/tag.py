@@ -41,7 +41,13 @@ async def tag_search_list(
     count: int = Query(10, description="获取博客数量"),
 ):
     # 参数校验
-    if not tag and not isinstance(start, int) and not isinstance(count, int):
+    if (
+        not tag
+        and not isinstance(start, int)
+        and not isinstance(count, int)
+        and start < 0
+        and count <= 0
+    ):
         return JSONResponse(
             content={"success": False, "message": "参数错误"}, status_code=400
         )
