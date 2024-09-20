@@ -20,6 +20,7 @@ from routes import (
     author,
     tag,
     search_blog,
+    admin,
 )
 
 # 获取日志记录器
@@ -69,6 +70,7 @@ app.include_router(get_blog.router)  # 注册获取博客路由
 app.include_router(author.router)  # 注册作者路由
 app.include_router(tag.router)  # 注册标签路由
 app.include_router(search_blog.router)  # 注册搜索博客路由
+app.include_router(admin.router)  # 注册管理员路由
 
 if __name__ == "__main__":
     logger.info("启动 FastAPI 服务")

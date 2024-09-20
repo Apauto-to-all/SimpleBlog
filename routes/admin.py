@@ -34,21 +34,15 @@ async def admin(
 @router.get("/admin/get_users", response_class=JSONResponse)
 async def get_users(
     access_token: Optional[str] = Cookie(None),
-    start: int = Query(0),
-    count: int = Query(10),
 ):
-    if (
-        not access_token
-        and not isinstance(start, int)
-        and not isinstance(count, int)
-        and start < 0
-        and count <= 0
-        and not await login_util.is_login(access_token, "admin")
-    ):
+    if not access_token and not await login_util.is_login(access_token, "admin"):
         return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
-    users_list = await admin_util.get_all_users(start, count)
-    return JSONResponse(content=users_list, status_code=200)
+    users_list = await admin_util.get_all_users()
+    return JSONResponse(
+        content={"code": 0, "msg": "", "count": len(users_list), "data": users_list},
+        status_code=200,
+    )
 
 
 # 获取用户的所有博客信息
