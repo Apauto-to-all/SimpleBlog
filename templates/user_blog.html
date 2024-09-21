@@ -27,6 +27,21 @@
                         class="layui-btn layui-btn-primary layui-btn-lg">
                         <i class="layui-icon layui-icon-edit"></i> 写博客
                     </a>
+                    {% if user_dict.is_forbid %}
+                    <button class="layui-btn layui-btn-danger layui-btn-lg" id="is_forbid_button">
+                        <i class="layui-icon layui-icon-close"></i> 禁言中
+                    </button>
+                    <script>
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            // 点击禁言按钮提示
+                            document.getElementById('is_forbid_button').addEventListener('click', function () {
+                                layer.alert('由于您的违规操作，您已被平台禁言<br>无法创作公开博客，也无法修改公开博客的内容<br>禁言结束时间：{{ user_dict.forbid_end_time }}<br>剩余禁言时间：{{ user_dict.forbid_remaining_time }}', { icon: 2, title: '禁言提示' });
+                            });
+
+                        });
+                    </script>
+                    {% endif %}
                     <p>
                         点击已经创作的博客，跳转修改页面进行修改内容或公开博客
                     </p>

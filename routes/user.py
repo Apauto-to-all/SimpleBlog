@@ -1,3 +1,4 @@
+import time
 from fastapi import (
     APIRouter,  # 功能：用于创建路由
     Request,
@@ -12,7 +13,7 @@ from typing import Optional  # 功能：用于声明可选参数
 
 import logging
 
-from utils import blog_util, login_util
+from utils import blog_util, login_util, admin_util
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +52,29 @@ async def user_blog(
     if user_dict and access_token and await login_util.is_login(access_token, username):
         # 去除密码
         user_dict.pop("password", None)
+        # 判断用户是否被禁言
+        user_dict["is_forbid"] = await admin_util.is_forbid_user(user_dict["username"])
+        # 禁言结束时间
+        user_dict["forbid_end_time"] = (
+            await admin_util.get_forbid_end_time(user_dict["username"])
+            if user_dict["is_forbid"]
+            else -1
+        )
+        # 禁言剩余时间
+        user_dict["forbid_remaining_time"] = (
+            user_dict["forbid_end_time"] - int(time.time())
+            if user_dict["is_forbid"]
+            else -1
+        )
+        # 如果被禁言，转化为时间格式
+        if user_dict["is_forbid"]:
+            user_dict["forbid_end_time"] = time.strftime(
+                "%Y-%m-%d %H:%M:%S", time.localtime(user_dict["forbid_end_time"])
+            )
+            user_dict["forbid_remaining_time"] = time.strftime(
+                "%H:%M:%S", time.gmtime(user_dict["forbid_remaining_time"])
+            )
+
         return templates.TemplateResponse(
             "user_blog.html",
             {
