@@ -66,3 +66,48 @@ async def get_user_blogs(
 
     blogs_list = await blog_util.get_user_blogs_list(username, start, count, True)
     return JSONResponse(content=blogs_list, status_code=200)
+
+
+# 禁言用户
+@router.get("/admin/forbid_user", response_class=JSONResponse)
+async def forbid_user(
+    access_token: Optional[str] = Cookie(None),
+    username: str = Query(None),
+    minutes: int = Query(0),  # 默认禁言 0 分钟
+):
+    if (
+        not access_token
+        and not username
+        and not isinstance(minutes, int)
+        and minutes < 0
+        and not await login_util.is_login(access_token, "admin")
+    ):
+        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+
+    result = await admin_util.forbid_user(username, minutes)
+    return (
+        JSONResponse(content={"status": "success"}, status_code=200)
+        if result
+        else JSONResponse(content={"status": "fail"}, status_code=400)
+    )
+
+
+# 解除禁言
+@router.get("/admin/unforbid_user", response_class=JSONResponse)
+async def unforbid_user(
+    access_token: Optional[str] = Cookie(None),
+    username: str = Query(None),
+):
+    if (
+        not access_token
+        and not username
+        and not await login_util.is_login(access_token, "admin")
+    ):
+        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+
+    result = await admin_util.unforbid_user(username)
+    return (
+        JSONResponse(content={"status": "success"}, status_code=200)
+        if result
+        else JSONResponse(content={"status": "fail"}, status_code=400)
+    )

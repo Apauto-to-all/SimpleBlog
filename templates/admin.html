@@ -4,6 +4,88 @@
 
 {% block content %}
 
+<div style="padding: 16px;">
+    <table class="layui-hide" id="user" lay-filter="user"></table>
+</div>
+<!-- 工具条模板 -->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="toggleMute">管理禁言</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 
+<script>
+    layui.use(function () {
+        var table = layui.table;
+        var layer = layui.layer;
+
+        // 初始化表格
+        table.render({
+            elem: '#user',
+            url: '/admin/get_users', // 数据接口
+            method: 'GET',
+            page: true, // 开启分页
+            cols: [[ // 表头
+                { field: 'username', title: '用户名', width: 200 },
+                { field: 'nickname', title: '昵称', width: 200 },
+                {
+                    field: 'is_forbid', title: '禁言状态', width: 100, templet: function (d) {
+                        return d.is_forbid ? '已禁言' : '正常';
+                    }
+                },
+                { field: 'forbid_end_time', title: '禁言结束时间', width: 200 },
+                { field: 'forbid_remaining_time', title: '剩余禁言时间', width: 200 },
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 250 }
+            ]]
+        });
+
+        // 监听工具条
+        table.on('tool(user)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'toggleMute') {
+                if (data.is_forbid) {
+                    // 解除禁言
+                    layer.confirm('确定要解除禁言吗？', function (index) {
+                        // 发送解除禁言请求
+                        fetch(`/admin/unforbid_user?username=${data.username}`, {
+                            method: 'GET'
+                        }).then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    layer.msg('已解除禁言', { icon: 1 });
+                                    table.reload('user'); // 重新加载表格数据
+                                } else {
+                                    layer.msg('操作失败', { icon: 2 });
+                                }
+                            });
+                        layer.close(index);
+                    });
+                } else {
+                    // 禁言
+                    layer.prompt({ title: '请输入禁言时间（分钟）', formType: 0 }, function (value, index) {
+                        // 发送禁言请求
+                        fetch(`/admin/forbid_user?username=${data.username}&minutes=${value}`, {
+                            method: 'GET'
+                        }).then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    layer.msg('已禁言', { icon: 1 });
+                                    table.reload('user'); // 重新加载表格数据
+                                } else {
+                                    layer.msg('操作失败', { icon: 2 });
+                                }
+                            });
+                        layer.close(index);
+                    });
+                }
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>
 
 {% endblock %}

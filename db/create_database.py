@@ -23,7 +23,7 @@ async def create_database():
     await conn.close()
 
 
-asyncio.run(create_database())
+# asyncio.run(create_database())
 
 
 # 创建一些表
@@ -123,24 +123,22 @@ async def create_tables():
     if not view_exists:
         await conn.execute(sql)
 
+    # 创建用户禁言表
+    """
+    用户禁言表：
+    用户名 - 外键，关联用户表
+    结束时间 - 禁言结束时间，使用int（time.time()）存储
+    """
+    sql = """
+    CREATE TABLE IF NOT EXISTS forbid_users (
+        username varchar(15) REFERENCES users(username) not null,
+        end_time int not null,
+        PRIMARY KEY (username)
+    );
+    """
+    await conn.execute(sql)
+
     await conn.close()
 
 
 asyncio.run(create_tables())
-
-
-# 插入博客并获取自增ID
-async def insert_blog(title, content):
-    conn = await asyncpg.connect(
-        user=pgsql_user,
-        password=pgsql_password,
-        host=pgsql_host,
-        port=pgsql_port,
-        database=database_name,
-    )
-    sql = """
-    INSERT INTO blogs (title, content) VALUES ($1, $2) RETURNING blog_id;
-    """
-    blog_id = await conn.fetchval(sql, title, content)
-    await conn.close()
-    return blog_id
