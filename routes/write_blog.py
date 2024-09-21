@@ -11,7 +11,7 @@ from typing import Optional  # 功能：用于声明可选参数
 
 import logging
 
-from utils import blog_util, login_util
+from utils import blog_util, login_util, admin_util
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +68,11 @@ async def write_blog(
     if access_token:
         username = await login_util.get_user_from_jwt(access_token)
         if username and await login_util.is_login(access_token, username):
+            if await admin_util.is_forbid_user(username):
+                if is_public:  # 如果是公开博客，禁言用户不能修改
+                    return RedirectResponse(f"/user/{username}/blog", status_code=302)
+                # 如果是草稿博客，禁言用户可以修改，但不能修改为公开
+                is_public = False
             result = await blog_util.revise_blog(
                 blog_id, title, markdown_content, tags, is_public
             )
@@ -90,6 +95,9 @@ async def write_blog(
     if access_token:
         username = await login_util.get_user_from_jwt(access_token)
         if username and await login_util.is_login(access_token, username):
+            is_public = (
+                False if await admin_util.is_forbid_user(username) else is_public
+            )  # 禁言用户不能写公开博客
             blog_id = await blog_util.write_blog(
                 username, title, markdown_content, tags, is_public
             )
