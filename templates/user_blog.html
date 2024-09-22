@@ -112,6 +112,7 @@
                             <span><i class="layui-icon layui-icon-praise"></i> ${blog.likes} 点赞量</span>
                             <span><i class="layui-icon layui-icon-username"></i> ${blog.nickname}</span>
                             ${blog.is_public ? '' : '<span style="color: red;"><i class="layui-icon layui-icon-close"></i> 未公开</span>'}
+                            ${blog.is_forbid_blog ? '<span style="color: red;"><i class="layui-icon layui-icon-close"></i> 已被平台禁止公开</span>' : ''}
                         </div>
                         <div class="blog-button" style="text-align: right;">
                             ${blog.is_public ? `<button class="layui-btn layui-btn-primary layui-btn-sm" onclick="window.location.href='/blog/${blog.blog_id}'">查看博客</button>` : ""}
