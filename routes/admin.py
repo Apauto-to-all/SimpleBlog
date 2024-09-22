@@ -48,24 +48,20 @@ async def get_users(
 # 获取用户的所有博客信息
 @router.get("/admin/get_user_blogs", response_class=JSONResponse)
 async def get_user_blogs(
-    access_token: Optional[str] = Cookie(None),
-    username: str = Query(None),
-    start: int = Query(0),
-    count: int = Query(10),
+    access_token: Optional[str] = Cookie(None), username: str = Query(None)
 ):
     if (
         not access_token
         and not username
-        and not isinstance(start, int)
-        and not isinstance(count, int)
-        and start < 0
-        and count <= 0
         and not await login_util.is_login(access_token, "admin")
     ):
         return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
-    blogs_list = await blog_util.get_user_blogs_list(username, start, count, True)
-    return JSONResponse(content=blogs_list, status_code=200)
+    blogs_list = await blog_util.get_user_blogs_list(username=username, get_all=True)
+    return JSONResponse(
+        content={"code": 0, "msg": "", "count": len(blogs_list), "data": blogs_list},
+        status_code=200,
+    )
 
 
 # 禁言用户
