@@ -138,6 +138,19 @@ async def create_tables():
     """
     await conn.execute(sql)
 
+    # 创建博客禁止公开表
+    """
+    博客禁止公开表：
+    博客id - 外键，关联博客表
+    """
+    sql = """
+    CREATE TABLE IF NOT EXISTS forbid_blogs (
+        blog_id int REFERENCES blogs(blog_id) not null,
+        PRIMARY KEY (blog_id)
+    );
+    """
+    await conn.execute(sql)
+
     await conn.close()
 
 

@@ -44,6 +44,7 @@ async def get_tag_search_list(tags_list: list, start: int, count: int) -> list:
             "created_at": "2021-01-01 00:00:00",  # 发布时间
             "last_modified": "2021-01-01 00:00:00",  # 最后修改时间
             "is_public": True,  # 是否公开
+            "is_forbid_blog": False,  # 是否被禁止公开
         }
     ]
     return await get_new_blogs_list(blog_list)

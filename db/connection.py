@@ -20,11 +20,17 @@ from .tags_operate import TagsOperation
 from .users_operate import UserOperation
 from .get_blogs import GetBlogs
 from .forbid_users import ForbidUserOperation
+from .forbid_blogs import ForbidBlogOperation
 
 
 # 数据库操作类
 class DatabaseOperation(
-    BlogOperation, TagsOperation, UserOperation, GetBlogs, ForbidUserOperation
+    BlogOperation,
+    TagsOperation,
+    UserOperation,
+    GetBlogs,
+    ForbidUserOperation,
+    ForbidBlogOperation,
 ):
     _instance = None  # 单例模式
     error_mun = 0  # 错误次数

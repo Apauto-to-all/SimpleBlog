@@ -172,6 +172,27 @@ class BlogOperation:
                 logger.error(error_info)
                 logger.error(e)
 
+    # 设置博客不公开
+    async def blogs_set_private(self, blog_id: int):
+        """
+        设置博客不公开
+        :param blog_id: 博客id
+        :return: 设置成功返回True，设置失败返回False
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                sql = """
+                UPDATE blogs SET is_public = false WHERE blog_id = $1;
+                """
+                await conn.execute(sql, blog_id)
+                logger.info(f"博客-{blog_id}设置不公开成功！")
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                return False
+        return True
+
 
 """
 博客表：

@@ -32,13 +32,18 @@
                 { field: 'blog_id', title: '博客ID', width: 100 },
                 { field: 'title', title: '标题', width: 200 },
                 { field: 'content', title: '内容', width: 250 },
-                { field: 'views', title: '阅读量', width: 100 },
-                { field: 'likes', title: '点赞量', width: 100 },
-                { field: 'created_at', title: '发布时间', width: 200 },
-                { field: 'last_modified', title: '最后修改时间', width: 200 },
+                { field: 'views', title: '阅读量', width: 80 },
+                { field: 'likes', title: '点赞量', width: 80 },
+                { field: 'created_at', title: '发布时间', width: 180 },
+                { field: 'last_modified', title: '最后修改时间', width: 180 },
                 {
                     field: 'is_public', title: '是否公开', width: 100, templet: function (d) {
                         return d.is_public ? '公开' : '私密';
+                    }
+                },
+                {
+                    field: 'is_forbid_blog', title: '是否被禁', width: 100, templet: function (d) {
+                        return d.is_forbid_blog ? '<span style="color: red;">是</span>' : '<span style="color: green;">否</span>';
                     }
                 },
                 { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200 }
@@ -57,8 +62,40 @@
                     area: ['90%', '90%']
                 });
             } else if (obj.event === 'edit') {
-                // 编辑博客
-                layer.msg('编辑博客功能暂未实现', { icon: 2 });
+                // 编辑博客，设置博客是否禁止公开
+                if (data.is_forbid_blog) {
+                    layer.confirm('确定要<span style="color: green;">解除</span>禁止公开吗？', function (index) {
+                        // 发送解除禁止公开请求
+                        fetch(`/admin/unforbid_blog?blog_id=${data.blog_id}`, {
+                            method: 'GET'
+                        }).then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    layer.msg('已解除禁止公开', { icon: 1 });
+                                    table.reload('blog'); // 重新加载表格数据
+                                } else {
+                                    layer.msg('操作失败', { icon: 2 });
+                                }
+                            });
+                        layer.close(index);
+                    });
+                } else {
+                    layer.confirm('确定要<span style="color: red;">禁止</span>公开这篇博客吗？', function (index) {
+                        // 发送禁止公开请求
+                        fetch(`/admin/forbid_blog?blog_id=${data.blog_id}`, {
+                            method: 'GET'
+                        }).then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    layer.msg('已禁止公开', { icon: 1 });
+                                    table.reload('blog'); // 重新加载表格数据
+                                } else {
+                                    layer.msg('操作失败', { icon: 2 });
+                                }
+                            });
+                        layer.close(index);
+                    });
+                }
             } else if (obj.event === 'delete') {
                 layer.confirm('确定要删除这篇博客吗？仅删除表格中的数据', function (index) {
                     // 仅删除表格中的数据，不发送请求

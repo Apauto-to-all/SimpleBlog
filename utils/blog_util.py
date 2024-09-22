@@ -3,6 +3,8 @@ from db.connection import DatabaseOperation
 import logging
 import pytz
 
+from utils import admin_util
+
 logger = logging.getLogger(__name__)
 
 # 创建一个数据库操作对象
@@ -200,6 +202,7 @@ async def get_new_blogs_list(blogs_list: list) -> list:
             .strftime("%Y-%m-%d %H:%M:%S"),  # 最后修改时间
             "tags": await blogs_operation.tags_select(blog_info.get("blog_id")),
             "is_public": blog_info.get("is_public"),
+            "is_forbid_blog": await admin_util.is_forbid_blog(blog_info.get("blog_id")),
         }
         new_blogs_list.append(blog_dict)
     return new_blogs_list

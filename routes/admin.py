@@ -131,3 +131,45 @@ async def unforbid_user(
         if result
         else JSONResponse(content={"status": "fail"}, status_code=400)
     )
+
+
+# 禁止博客公开
+@router.get("/admin/forbid_blog", response_class=JSONResponse)
+async def forbid_blog(
+    access_token: Optional[str] = Cookie(None),
+    blog_id: int = Query(None),
+):
+    if (
+        not access_token
+        and not blog_id
+        and not await login_util.is_login(access_token, "admin")
+    ):
+        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+
+    result = await admin_util.forbid_blog(blog_id)
+    return (
+        JSONResponse(content={"status": "success"}, status_code=200)
+        if result
+        else JSONResponse(content={"status": "fail"}, status_code=400)
+    )
+
+
+# 解除博客禁止公开
+@router.get("/admin/unforbid_blog", response_class=JSONResponse)
+async def unforbid_blog(
+    access_token: Optional[str] = Cookie(None),
+    blog_id: int = Query(None),
+):
+    if (
+        not access_token
+        and not blog_id
+        and not await login_util.is_login(access_token, "admin")
+    ):
+        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+
+    result = await admin_util.unforbid_blog(blog_id)
+    return (
+        JSONResponse(content={"status": "success"}, status_code=200)
+        if result
+        else JSONResponse(content={"status": "fail"}, status_code=400)
+    )

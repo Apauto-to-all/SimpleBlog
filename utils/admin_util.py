@@ -133,3 +133,42 @@ async def unforbid_user(username: str):
     if result:
         return True
     return False
+
+
+# 禁止博客公开
+async def forbid_blog(blog_id: int):
+    """
+    禁止博客公开
+    :param blog_id: 博客 id
+    :return: 是否成功
+    """
+    result = await operate.forbid_blog(blog_id)
+    await operate.blogs_set_private(blog_id)
+    if result:
+        return True
+    return False
+
+
+# 解除博客禁止公开
+async def unforbid_blog(blog_id: int):
+    """
+    解除博客禁止公开
+    :param blog_id: 博客 id
+    :return: 是否成功
+    """
+    result = await operate.unforbid_blog(blog_id)
+    if result:
+        return True
+    return False
+
+
+# 判断博客是否被禁止公开
+async def is_forbid_blog(blog_id: int):
+    """
+    判断博客是否被禁止公开
+    :param blog_id: 博客 id
+    :return: 是否被禁止公开
+    """
+    if await operate.is_forbid_blog(blog_id):
+        return True
+    return False
