@@ -85,7 +85,6 @@ class GetBlogs:
         start: int = 0,
         count: int = 10,
         is_all: bool = False,
-        get_all: bool = False,
     ) -> list:
         """
         获取用户创作的博客信息，按发布时间倒序排列
@@ -93,38 +92,28 @@ class GetBlogs:
         :param start: 起始位置
         :param count: 获取博客数量
         :param is_all: 是否获取全部博客，只有用户自己可以获取全部博客，默认为False
-        :param get_all: 是否获取所有博客，无论是否公开，默认为False——管理员使用
         :return: 返回博客信息列表
         """
         async with self.pool.acquire() as conn:
             try:
-                if get_all:  # 获取所有博客，无论是否公开，管理员使用
+                if is_all:  # 提供所有博客，无论是否公开
                     sql = """
                     SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
                     FROM blogs
                     WHERE username = $1
                     ORDER BY created_at DESC
+                    LIMIT $2 OFFSET $3;
                     """
-                    blog_list = await conn.fetch(sql, username)
-                else:
-                    if is_all:  # 提供所有博客，无论是否公开
-                        sql = """
-                        SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
-                        FROM blogs
-                        WHERE username = $1
-                        ORDER BY created_at DESC
-                        LIMIT $2 OFFSET $3;
-                        """
-                    else:  # 提供公开博客
-                        sql = """
-                        SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
-                        FROM blogs
-                        WHERE username = $1
-                        AND is_public = true
-                        ORDER BY created_at DESC
-                        LIMIT $2 OFFSET $3;
-                        """
-                    blog_list = await conn.fetch(sql, username, count, start)
+                else:  # 提供公开博客
+                    sql = """
+                    SELECT blog_id, title, content, username, views, likes, created_at, last_modified, is_public
+                    FROM blogs
+                    WHERE username = $1
+                    AND is_public = true
+                    ORDER BY created_at DESC
+                    LIMIT $2 OFFSET $3;
+                    """
+                blog_list = await conn.fetch(sql, username, count, start)
                 logger.info(f"获取{username}的博客信息成功！")
             except Exception as e:
                 error_info = traceback.format_exc()
@@ -160,6 +149,33 @@ class GetBlogs:
                 logger.error(e)
                 return []
         return blog_list if blog_list else []
+
+    # 获取博客数量，用户名为空时获取所有博客数量
+    async def blogs_count(self, username: str = "") -> int:
+        """
+        获取博客数量
+        :param username: 用户名
+        :return: 返回博客数量
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                if username:
+                    sql = """
+                    SELECT COUNT(blog_id) FROM blogs WHERE username = $1;
+                    """
+                    blog_count = await conn.fetchval(sql, username)
+                else:
+                    sql = """
+                    SELECT COUNT(blog_id) FROM blogs;
+                    """
+                    blog_count = await conn.fetchval(sql)
+                logger.info(f"获取博客数量成功！")
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                return 0
+        return blog_count if blog_count else 0
 
 
 """

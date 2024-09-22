@@ -73,9 +73,11 @@ class UserOperation:
             return user_dict if user_dict else {}
 
     # 查询所有用户信息，返回用户信息列表
-    async def users_select_all(self) -> list:
+    async def users_select_all(self, start: int = 0, count: int = 10) -> list:
         """
         查询所有用户信息
+        :param start: 起始位置
+        :param count: 获取用户数量
         :return: 用户信息列表
         """
         async with self.pool.acquire() as conn:
@@ -83,8 +85,9 @@ class UserOperation:
                 sql = """
                 SELECT username, password, nickname
                 FROM users
+                LIMIT $1 OFFSET $2;
                 """
-                users = await conn.fetch(sql)
+                users = await conn.fetch(sql, count, start)
                 users_list = []
                 for user in users:
                     user_dict = {
@@ -93,7 +96,7 @@ class UserOperation:
                         "nickname": user.get("nickname", None),
                     }
                     users_list.append(user_dict)
-                logger.info("所有用户信息查询成功！")
+                logger.info("管理员查询部分用户信息成功！")
             except Exception as e:
                 error_info = traceback.format_exc()
                 logger.error(error_info)
@@ -101,6 +104,27 @@ class UserOperation:
                 return []
 
             return users_list if users_list else []
+
+    # 查询用户数量
+    async def users_count(self) -> int:
+        """
+        查询用户数量
+        :return: 用户数量
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                sql = """
+                SELECT COUNT(*) FROM users;
+                """
+                count = await conn.fetchval(sql)
+                logger.info("查询用户数量成功！")
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                return 0
+
+            return count if count else 0
 
 
 """

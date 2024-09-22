@@ -10,19 +10,19 @@ logger = logging.getLogger(__name__)
 operate = DatabaseOperation()
 
 
-# 获取所有用户信息，返回一个列表
-async def get_all_users():
+# 获取所有用户信息，返回一个列表，从 start 开始，数量为 count
+async def get_all_users(start: int, count: int):
     """
     获取所有用户信息
+    :param start: 开始位置
+    :param count: 获取用户数量
     :return: 用户信息列表
     """
     logger.info("开始获取所有用户信息")
-    users_list = await operate.users_select_all()
+    users_list = await operate.users_select_all(start, count)
     # 去除密码信息
     for user_info in users_list:
         user_info.pop("password")
-    # 去除管理员信息
-    users_list.remove({"username": "admin", "nickname": "管理员"})
     # 添加是否禁言，以及禁言结束时间，以及禁言剩余时间
     for user_info in users_list:
         # 判断用户是否被禁言
@@ -63,6 +63,17 @@ async def get_all_users():
         },
     ]
     return users_list
+
+
+# 获取所有用户数量
+async def get_all_users_count():
+    """
+    获取所有用户数量
+    :return: 用户数量
+    """
+    logger.info("开始获取所有用户数量")
+    count = await operate.users_count()
+    return count
 
 
 # 禁言用户

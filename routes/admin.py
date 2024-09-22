@@ -30,17 +30,34 @@ async def admin(
     return RedirectResponse("/user_login", status_code=302)
 
 
+# 管理用户博客页面
+@router.get("/admin/{username}/blog", response_class=HTMLResponse)
+async def admin_user_blog(
+    request: Request,
+    username: Optional[str],
+    access_token: Optional[str] = Cookie(None),
+):
+    if access_token and await login_util.is_login(access_token, "admin"):
+        return templates.TemplateResponse(
+            "admin_user_blog.html", {"request": request, "username": username}
+        )
+    return RedirectResponse("/user_login", status_code=302)
+
+
 # 获取所有用户信息
 @router.get("/admin/get_users", response_class=JSONResponse)
 async def get_users(
     access_token: Optional[str] = Cookie(None),
+    page: int = Query(1),
+    limit: int = Query(10),
 ):
     if not access_token and not await login_util.is_login(access_token, "admin"):
         return JSONResponse(content={"error": "参数错误"}, status_code=400)
-
-    users_list = await admin_util.get_all_users()
+    start = (page - 1) * limit
+    users_list = await admin_util.get_all_users(start=start, count=limit)
+    all_users_count = await admin_util.get_all_users_count()
     return JSONResponse(
-        content={"code": 0, "msg": "", "count": len(users_list), "data": users_list},
+        content={"code": 0, "msg": "", "count": all_users_count, "data": users_list},
         status_code=200,
     )
 
@@ -48,18 +65,25 @@ async def get_users(
 # 获取用户的所有博客信息
 @router.get("/admin/get_user_blogs", response_class=JSONResponse)
 async def get_user_blogs(
-    access_token: Optional[str] = Cookie(None), username: str = Query(None)
+    access_token: Optional[str] = Cookie(None),
+    username: str = Query(None),
+    page: int = Query(1),
+    limit: int = Query(10),
 ):
     if (
         not access_token
-        and not username
-        and not await login_util.is_login(access_token, "admin")
+        or not username
+        or not await login_util.is_login(access_token, "admin")
     ):
         return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
-    blogs_list = await blog_util.get_user_blogs_list(username=username, get_all=True)
+    start = (page - 1) * limit
+    blogs_list = await blog_util.get_user_blogs_list(
+        username=username, start=start, count=limit, is_all=True
+    )
+    all_blogs_count = await blog_util.get_user_blogs_count(username)
     return JSONResponse(
-        content={"code": 0, "msg": "", "count": len(blogs_list), "data": blogs_list},
+        content={"code": 0, "msg": "", "count": all_blogs_count, "data": blogs_list},
         status_code=200,
     )
 

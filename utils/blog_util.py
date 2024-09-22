@@ -164,7 +164,6 @@ async def get_user_blogs_list(
     start: int = 0,
     count: int = 10,
     is_all: bool = False,
-    get_all: bool = False,
 ) -> list:
     """
     获取用户创作的博客信息列表
@@ -172,19 +171,11 @@ async def get_user_blogs_list(
     :param start: 起始位置
     :param count: 获取博客数量
     :param is_all: 是否获取全部博客，只有用户自己可以获取全部博客，默认为False
-    :param get_all: 是否获取所有博客，无论是否公开，默认为False——管理员使用
     :return: 博客信息列表
     """
-    if not username:
-        return []
-    if get_all:
-        blogs_list = await blogs_operation.blogs_select_list_by_username(
-            username=username, get_all=True
-        )
-    else:
-        blogs_list = await blogs_operation.blogs_select_list_by_username(
-            username, start, count, is_all
-        )
+    blogs_list = await blogs_operation.blogs_select_list_by_username(
+        username, start, count, is_all
+    )
     return await get_new_blogs_list(blogs_list)
 
 
@@ -225,3 +216,13 @@ async def get_blog_search_list(keyword: str, start: int, count: int) -> list:
     """
     blog_list = await blogs_operation.blogs_search(keyword, start, count)
     return await get_new_blogs_list(blog_list)
+
+
+# 获取用户的博客数量
+async def get_user_blogs_count(username: str) -> int:
+    """
+    获取用户的博客数量
+    :param username: 用户名
+    :return: 博客数量
+    """
+    return await blogs_operation.blogs_count(username)
