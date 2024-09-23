@@ -35,13 +35,13 @@ footer {
 /* 用户头像样式 */
 .user-avatar {
   /* 设置自动宽度 */
-  width: auto;
+  width: 50px;
   /* 设置固定高度 */
   height: 50px;
   /* 圆角效果 */
   border-radius: 50%;
   /* 边框 */
-  border: 2px solid #ddd;
+  border: 1px solid #ddd;
   /* 阴影效果 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* 确保图片按比例填充 */
