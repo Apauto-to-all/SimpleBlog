@@ -1,3 +1,4 @@
+import os
 import time
 from fastapi import (
     APIRouter,  # 功能：用于创建路由
@@ -96,23 +97,26 @@ async def is_login(
         if username:
             user_dict = await login_util.get_user_dict(username)
             if user_dict:
-                return {user_dict.get("nickname", "未知用户"): f"/user/{username}"}
+                return [
+                    username,
+                    user_dict.get("nickname", "未知用户"),
+                    f"/user/{username}",
+                ]
 
-    return {"未登入": "/user_login"}
+    return ["未知", "未知用户", "/user_login"]
 
 
 # 获取用户头像文件
-@router.get("/img/user_avatar")
+@router.get("/img/user_avatar/{username}")
 async def get_user_avatar(
-    access_token: Optional[str] = Cookie(None),
+    username: Optional[str] = None,
 ):
-    if access_token:
-        username = await login_util.get_user_from_jwt(access_token)
-        if username:
-            user_dict = await login_util.get_user_dict(username)
-            if user_dict:
-                avatar_path = user_dict.get("avatar_path")
-                if avatar_path:
-                    return FileResponse(f"static/img/user_avatar/{avatar_path}")
+    if username:
+        user_dict = await login_util.get_user_dict(username)
+        if user_dict:
+            avatar_path = user_dict.get("avatar_path")
+            # 格式：static/img/user_avatar/用户名.png
+            if avatar_path and os.path.exists(avatar_path):
+                return FileResponse(avatar_path)
 
     return FileResponse("static/img/user_default_avatar.png")

@@ -1,16 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
   // 发送请求获取用户信息
-  fetch("/user_info", {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const userName = Object.keys(data)[0];
-      const userLink = data[userName];
+  fetch('/user_info')
+    .then(response => response.json())
+    .then(data => {
+      const [username, nickname, userLink] = data;
 
       // 更新用户信息
-      document.getElementById("user-name").innerText = userName; // 更新用户名
+      document.getElementById("user-name").innerText = nickname; // 更新昵称
       document.getElementById("user-avatar").href = userLink; // 更新用户头像链接
+
+      // 更新用户头像
+      var avatarImg = document.getElementById('user-avatar-show');
+      var timestamp = new Date().getTime(); // 防止浏览器缓存
 
       // 如果用户未登录，隐藏用户菜单
       if (userLink === "/user_login") {
@@ -20,12 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("user-profile").href = userLink; // 更新用户中心链接
         document.getElementById("user-login").style.display = "none"; // 隐藏登录按钮
         document.getElementById("user-register").style.display = "none"; // 隐藏注册按钮
+        avatarImg.src = `/img/user_avatar/${username}?t=${timestamp}`;
       }
-      var avatarImg = document.getElementById('user-avatar-show');
-      var timestamp = new Date().getTime();
-      avatarImg.src = `/img/user_avatar?t=${timestamp}`;
     })
-    .catch((error) => {
-      console.error("Error fetching user info:", error);
+    .catch(error => {
+      console.error('Error fetching user info:', error);
     });
 });
