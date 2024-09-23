@@ -25,7 +25,7 @@
         // 初始化表格
         table.render({
             elem: '#blog',
-            url: '/admin/get_user_blogs?username={{ username }}', // 数据接口
+            url: '/admin/api/get_user_blogs?username={{ username }}', // 数据接口
             method: 'GET',
             page: true, // 开启分页
             cols: [[ // 表头
@@ -66,7 +66,7 @@
                 if (data.is_forbid_blog) {
                     layer.confirm('确定要<span style="color: green;">解除</span>禁止公开吗？', function (index) {
                         // 发送解除禁止公开请求
-                        fetch(`/admin/unforbid_blog?blog_id=${data.blog_id}`, {
+                        fetch(`/admin/api/unforbid_blog?blog_id=${data.blog_id}`, {
                             method: 'GET'
                         }).then(response => response.json())
                             .then(result => {
@@ -82,7 +82,7 @@
                 } else {
                     layer.confirm('确定要<span style="color: red;">禁止</span>公开这篇博客吗？', function (index) {
                         // 发送禁止公开请求
-                        fetch(`/admin/forbid_blog?blog_id=${data.blog_id}`, {
+                        fetch(`/admin/api/forbid_blog?blog_id=${data.blog_id}`, {
                             method: 'GET'
                         }).then(response => response.json())
                             .then(result => {

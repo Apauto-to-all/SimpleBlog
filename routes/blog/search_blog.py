@@ -22,18 +22,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-# 搜索博客
-@router.get("/blog_search", response_class=HTMLResponse)
-async def blog_search(
-    request: Request,
-    keyword: str = Query(None, description="关键字"),
-):
-    return templates.TemplateResponse(
-        "blog_search.html", {"request": request, "keyword": keyword}
-    )
-
-
-@router.get("/blog_search_list")
+@router.get("/blog/api/search")
 async def blog_search_list(
     keyword: str = Query(None, description="关键字"),
     start: int = Query(0, description="起始位置"),

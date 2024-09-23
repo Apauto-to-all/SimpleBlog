@@ -6,7 +6,7 @@ layui.use('layer', function () {
         // 如果已经点赞，发送取消点赞的请求
         if (icon.classList.contains('liked')) {
             // 发送 AJAX 请求到服务器
-            fetch(`/unlike_blog?blog_id=${blogId}`)
+            fetch(`/blog/api/unlike_blog?blog_id=${blogId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -28,7 +28,7 @@ layui.use('layer', function () {
         }
         else {
             // 发送 AJAX 请求到服务器
-            fetch(`/like_blog?blog_id=${blogId}`)
+            fetch(`/blog/api/like_blog?blog_id=${blogId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

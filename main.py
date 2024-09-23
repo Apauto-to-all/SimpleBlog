@@ -1,3 +1,4 @@
+import importlib
 from fastapi import FastAPI, Cookie  # 导入 FastAPI 框架
 import uvicorn
 from fastapi.responses import (
@@ -10,18 +11,6 @@ import config  # 导入配置文件
 from typing import Optional
 import logging
 from db.connection import DatabaseOperation
-from routes import (
-    index,
-    blog,
-    login_register,
-    write_blog,
-    user,
-    get_blog,
-    author,
-    tag,
-    search_blog,
-    admin,
-)
 
 # 获取日志记录器
 logger = logging.getLogger(__name__)
@@ -61,16 +50,34 @@ async def root():
     return RedirectResponse(url="/index", status_code=303)
 
 
-app.include_router(index.router)  # 注册首页路由
-app.include_router(blog.router)  # 注册博客路由
-app.include_router(login_register.router)  # 注册登录注册路由
-app.include_router(write_blog.router)  # 注册写博客路由
-app.include_router(user.router)  # 注册用户路由
-app.include_router(get_blog.router)  # 注册获取博客路由
-app.include_router(author.router)  # 注册作者路由
-app.include_router(tag.router)  # 注册标签路由
-app.include_router(search_blog.router)  # 注册搜索博客路由
-app.include_router(admin.router)  # 注册管理员路由
+# 路由模块列表
+route_modules = [
+    "routes.index",
+    "routes.admin.admin",
+    "routes.admin.blog_admin",
+    "routes.admin.user_admin",
+    "routes.author.author",
+    "routes.blog.blog",
+    "routes.blog.get_blog",
+    "routes.blog.like_blog",
+    "routes.blog.search_blog",
+    "routes.creation.creation",
+    "routes.creation.blog_creation",
+    "routes.login.login",
+    "routes.login.register",
+    "routes.login.post_login",
+    "routes.login.post_register",
+    "routes.login.get_captcha",
+    "routes.tag.tag",
+    "routes.tag.search_tag",
+    "routes.user.user",
+    "routes.user.get_user",
+]
+# 动态导入模块并注册路由
+for module_name in route_modules:
+    module = importlib.import_module(module_name)
+    app.include_router(module.router)
+
 
 if __name__ == "__main__":
     logger.info("启动 FastAPI 服务")

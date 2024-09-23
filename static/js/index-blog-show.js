@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         async function fetchBlogList(blogType, start = 0, count = 10, next) {
             try {
                 // 发送请求获取博客列表
-                const response = await fetch(`/blog_list/${blogType}?start=${start}&count=${count}`);
+                const response = await fetch(`/blog/api/blog_list/${blogType}?start=${start}&count=${count}`);
                 // 判断响应是否成功
                 if (!response.ok) {
                     layer.msg('获取博客列表失败', { icon: 2 });

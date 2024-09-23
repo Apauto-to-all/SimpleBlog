@@ -19,29 +19,8 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/blog", response_class=HTMLResponse)
-@router.get("/blog/{blog_id}", response_class=HTMLResponse)
-async def blog(
-    request: Request,
-    blog_id: Optional[int] = None,
-):
-    if blog_id:
-        # 获取博客所有信息
-        blog_dict = await blog_util.get_blog_info(blog_id)
-        if blog_dict and blog_dict.get("is_public") == True:
-            # 博客浏览量加一
-            await blog_util.blog_views_add_one(blog_id)
-            # 返回页面
-            return templates.TemplateResponse(
-                "blog.html",
-                {"request": request, "blog_dict": blog_dict},
-            )
-    # 跳转到首页
-    return templates.TemplateResponse("blog_404.html", {"request": request})
-
-
 # 点赞博客
-@router.get("/like_blog")
+@router.get("/blog/api/like_blog")
 async def like_blog(
     blog_id: int = Query(..., description="博客id"),
 ):
@@ -58,7 +37,7 @@ async def like_blog(
 
 
 # 取消点赞博客
-@router.get("/unlike_blog")
+@router.get("/blog/api/unlike_blog")
 async def unlike_blog(
     blog_id: int = Query(..., description="博客id"),
 ):

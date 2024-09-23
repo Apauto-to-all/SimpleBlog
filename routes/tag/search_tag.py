@@ -22,19 +22,8 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-# 标签搜索列表
-@router.get("/tag/search", response_class=HTMLResponse)
-async def tag_search(
-    request: Request,
-    tag: str = Query(None, description="标签"),
-):
-    return templates.TemplateResponse(
-        "tag_search.html", {"request": request, "tag": tag}
-    )
-
-
 # 获取标签搜索列表
-@router.get("/tag_search_list")
+@router.get("/tag/api/search")
 async def tag_search_list(
     tag: str = Query(None, description="标签"),
     start: int = Query(0, description="起始位置"),

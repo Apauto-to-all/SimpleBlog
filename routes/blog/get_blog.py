@@ -18,7 +18,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 # 获取博客信息列表
-@router.get("/blog_list/{blog_type}")
+@router.get("/blog/api/blog_list/{blog_type}")
 async def blog_list(
     blog_type: Optional[str] = None,
     start: int = Query(0, description="起始位置"),
@@ -56,7 +56,7 @@ async def blog_list(
 
 
 # 获取用户创作的博客信息列表
-@router.get("/user_blog_list/{username}")
+@router.get("/blog/api/user_blog_list/{username}")
 async def user_blog_list(
     username: Optional[str] = None,
     start: int = Query(0, description="起始位置"),

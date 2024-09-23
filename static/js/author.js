@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         async function fetchBlogList(username, start = 0, count = 10, is_all = false, next) {
             try {
                 // 构建请求URL
-                const url = new URL(`/user_blog_list/${username}`, window.location.origin);
+                const url = new URL(`/blog/api/user_blog_list/${username}`, window.location.origin);
                 url.searchParams.append('start', start);
                 url.searchParams.append('count', count);
                 url.searchParams.append('is_all', is_all);

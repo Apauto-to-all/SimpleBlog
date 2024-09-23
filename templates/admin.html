@@ -22,7 +22,7 @@
         // 初始化表格
         table.render({
             elem: '#user',
-            url: '/admin/get_users', // 数据接口
+            url: '/admin/api/get_users', // 数据接口
             method: 'GET',
             page: true, // 开启分页
             cols: [[ // 表头
@@ -47,7 +47,7 @@
                     // 解除禁言
                     layer.confirm('确定要解除禁言吗？', function (index) {
                         // 发送解除禁言请求
-                        fetch(`/admin/unforbid_user?username=${data.username}`, {
+                        fetch(`/admin/api/unforbid_user?username=${data.username}`, {
                             method: 'GET'
                         }).then(response => response.json())
                             .then(result => {
@@ -64,7 +64,7 @@
                     // 禁言
                     layer.prompt({ title: '请输入禁言时间（分钟）', formType: 0 }, function (value, index) {
                         // 发送禁言请求
-                        fetch(`/admin/forbid_user?username=${data.username}&minutes=${value}`, {
+                        fetch(`/admin/api/forbid_user?username=${data.username}&minutes=${value}`, {
                             method: 'GET'
                         }).then(response => response.json())
                             .then(result => {

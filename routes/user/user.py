@@ -40,7 +40,7 @@ async def user(
             },
         )
 
-    return RedirectResponse("/user_login", status_code=302)
+    return RedirectResponse("/login", status_code=302)
 
 
 @router.get("/user/{username}/blog", response_class=HTMLResponse)
@@ -84,39 +84,4 @@ async def user_blog(
             },
         )
 
-    return RedirectResponse("/user_login", status_code=302)
-
-
-# API获取用户信息以及跳转链接
-@router.get("/user_info")
-async def is_login(
-    access_token: Optional[str] = Cookie(None),
-):
-    if access_token:
-        username = await login_util.get_user_from_jwt(access_token)
-        if username:
-            user_dict = await login_util.get_user_dict(username)
-            if user_dict:
-                return [
-                    username,
-                    user_dict.get("nickname", "未知用户"),
-                    f"/user/{username}",
-                ]
-
-    return ["未知", "未知用户", "/user_login"]
-
-
-# 获取用户头像文件
-@router.get("/img/user_avatar/{username}")
-async def get_user_avatar(
-    username: Optional[str] = None,
-):
-    if username:
-        user_dict = await login_util.get_user_dict(username)
-        if user_dict:
-            avatar_path = user_dict.get("avatar_path")
-            # 格式：static/img/user_avatar/用户名.png
-            if avatar_path and os.path.exists(avatar_path):
-                return FileResponse(avatar_path)
-
-    return FileResponse("static/img/user_default_avatar.png")
+    return RedirectResponse("/login", status_code=302)

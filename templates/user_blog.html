@@ -23,7 +23,7 @@
                     {{ user_dict.nickname }} 的创作中心
                 </div>
                 <div class="layui-card-body">
-                    <a href="/user/{{ user_dict.username }}/blog/write"
+                    <a href="/creation/write/{{ user_dict.username }}/blog"
                         class="layui-btn layui-btn-primary layui-btn-lg">
                         <i class="layui-icon layui-icon-edit"></i> 写博客
                     </a>
@@ -76,7 +76,7 @@
             async function fetchBlogList(username, start = 0, count = 10, is_all = false, next) {
                 try {
                     // 构建请求URL
-                    const url = new URL(`/user_blog_list/${username}`, window.location.origin);
+                    const url = new URL(`/blog/api/user_blog_list/${username}`, window.location.origin);
                     url.searchParams.append('start', start);
                     url.searchParams.append('count', count);
                     url.searchParams.append('is_all', is_all);
@@ -116,7 +116,7 @@
                         </div>
                         <div class="blog-button" style="text-align: right;">
                             ${blog.is_public ? `<button class="layui-btn layui-btn-primary layui-btn-sm" onclick="window.location.href='/blog/${blog.blog_id}'">查看博客</button>` : ""}
-                            <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="window.location.href='/user/${blog.username}/blog/revise/${blog.blog_id}'">编辑博客</button>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="window.location.href='/creation/revise/${blog.username}/blog/${blog.blog_id}'">编辑博客</button>
                         </div>
                         <div class="blog-content">
                             ${blog.content}
