@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("user-login").style.display = "none"; // 隐藏登录按钮
         document.getElementById("user-register").style.display = "none"; // 隐藏注册按钮
       }
+      var avatarImg = document.getElementById('user-avatar-show');
+      var timestamp = new Date().getTime();
+      avatarImg.src = `/img/user_avatar?t=${timestamp}`;
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);

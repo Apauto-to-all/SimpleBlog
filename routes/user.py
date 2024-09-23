@@ -6,7 +6,7 @@ from fastapi import (
     Cookie,  # 功能：用于操作 Cookie
 )
 from fastapi.templating import Jinja2Templates  # 功能：用于渲染模板
-from fastapi.responses import HTMLResponse  # 功能：用于返回 HTML 响应
+from fastapi.responses import FileResponse, HTMLResponse  # 功能：用于返回 HTML 响应
 from fastapi.responses import RedirectResponse  # 功能：用于重定向
 from fastapi.templating import Jinja2Templates  # 功能：用于渲染模板
 from typing import Optional  # 功能：用于声明可选参数
@@ -99,3 +99,20 @@ async def is_login(
                 return {user_dict.get("nickname", "未知用户"): f"/user/{username}"}
 
     return {"未登入": "/user_login"}
+
+
+# 获取用户头像文件
+@router.get("/img/user_avatar")
+async def get_user_avatar(
+    access_token: Optional[str] = Cookie(None),
+):
+    if access_token:
+        username = await login_util.get_user_from_jwt(access_token)
+        if username:
+            user_dict = await login_util.get_user_dict(username)
+            if user_dict:
+                avatar_path = user_dict.get("avatar_path")
+                if avatar_path:
+                    return FileResponse(f"static/img/user_avatar/{avatar_path}")
+
+    return FileResponse("static/img/user_default_avatar.png")
