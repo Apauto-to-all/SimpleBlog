@@ -33,7 +33,7 @@ async def user(
         # 去除密码
         user_dict.pop("password", None)
         return templates.TemplateResponse(
-            "user.html",
+            "user/user.html",
             {
                 "request": request,
                 "user_dict": user_dict,
@@ -77,7 +77,7 @@ async def user_blog(
             )
 
         return templates.TemplateResponse(
-            "user_blog.html",
+            "user/user_blog.html",
             {
                 "request": request,
                 "user_dict": user_dict,

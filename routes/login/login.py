@@ -35,9 +35,9 @@ async def login(
 ):
     if access_token and await login_util.is_login(access_token):
         return templates.TemplateResponse(
-            "login.html", {"request": request, "is_login": True}
+            "login/login.html", {"request": request, "is_login": True}
         )
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse("login/login.html", {"request": request})
 
 
 # 注销页面

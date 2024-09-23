@@ -29,5 +29,5 @@ async def tag_search(
     tag: str = Query(None, description="标签"),
 ):
     return templates.TemplateResponse(
-        "tag_search.html", {"request": request, "tag": tag}
+        "tag/tag_search.html", {"request": request, "tag": tag}
     )

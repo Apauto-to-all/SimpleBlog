@@ -27,11 +27,11 @@ async def index(request: Request, blog_type: Optional[str] = None):
         blog_type = "hot_month"
     tags_list = await tag_util.get_best_tags()
     return templates.TemplateResponse(
-        "index.html",
+        "index/index.html",
         {"request": request, "blog_type": blog_type, "tags_list": tags_list},
     )
 
 
 @router.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
-    return templates.TemplateResponse("about.html", {"request": request})
+    return templates.TemplateResponse("index/about.html", {"request": request})

@@ -33,11 +33,11 @@ async def author(
             user_dict.pop("password", None)
             # 返回页面
             return templates.TemplateResponse(
-                "author.html",
+                "author/author.html",
                 {"request": request, "user_dict": user_dict},
             )
     # 返回页面
     return templates.TemplateResponse(
-        "author.html",
+        "author/author.html",
         {"request": request, "user_dict": {}},
     )

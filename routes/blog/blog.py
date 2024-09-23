@@ -33,11 +33,11 @@ async def blog(
             await blog_util.blog_views_add_one(blog_id)
             # 返回页面
             return templates.TemplateResponse(
-                "blog.html",
+                "blog/blog.html",
                 {"request": request, "blog_dict": blog_dict},
             )
     # 跳转到首页
-    return templates.TemplateResponse("blog_404.html", {"request": request})
+    return templates.TemplateResponse("blog/blog_404.html", {"request": request})
 
 
 # 搜索博客
@@ -47,5 +47,5 @@ async def blog_search(
     keyword: str = Query(None, description="关键字"),
 ):
     return templates.TemplateResponse(
-        "blog_search.html", {"request": request, "keyword": keyword}
+        "blog/blog_search.html", {"request": request, "keyword": keyword}
     )

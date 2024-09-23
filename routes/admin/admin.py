@@ -26,7 +26,7 @@ async def admin(
     access_token: Optional[str] = Cookie(None),
 ):
     if access_token and await login_util.is_login(access_token, "admin"):
-        return templates.TemplateResponse("admin.html", {"request": request})
+        return templates.TemplateResponse("admin/admin.html", {"request": request})
     return RedirectResponse("/login", status_code=302)
 
 
@@ -39,6 +39,6 @@ async def admin_user_blog(
 ):
     if access_token and await login_util.is_login(access_token, "admin"):
         return templates.TemplateResponse(
-            "admin_user_blog.html", {"request": request, "username": username}
+            "admin/admin_user_blog.html", {"request": request, "username": username}
         )
     return RedirectResponse("/login", status_code=302)

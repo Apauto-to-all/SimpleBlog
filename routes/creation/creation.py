@@ -27,7 +27,9 @@ async def write_blog(
 ):
     user_dict = await login_util.get_user_dict(username)
     if user_dict and access_token and await login_util.is_login(access_token, username):
-        return templates.TemplateResponse("write_blog.html", {"request": request})
+        return templates.TemplateResponse(
+            "creation/write_blog.html", {"request": request}
+        )
 
     return RedirectResponse(f"/user/{username}/blog", status_code=302)
 
@@ -51,6 +53,7 @@ async def write_blog(
         if blog_dict:
             blog_dict["tags_str"] = ",".join(blog_dict["tags"])
             return templates.TemplateResponse(
-                "revise_blog.html", {"request": request, "blog_dict": blog_dict}
+                "creation/revise_blog.html",
+                {"request": request, "blog_dict": blog_dict},
             )
     return RedirectResponse(f"/user/{username}/blog", status_code=302)
