@@ -28,6 +28,14 @@
                 <i class="layui-icon layui-icon-set"></i> 进入后台管理
             </a>
             {% endif %}
+            <!-- 修改个人信息 -->
+            <button class="layui-btn layui-btn-normal" id="edit-info">
+                <i class="layui-icon layui-icon-set"></i> 修改个人信息
+            </button>
+            <!-- 弹出窗口的表单 -->
+            <div id="edit-info-form" style="display: none;">
+
+            </div>
         </div>
         <div class="layui-card-body">
             <a href="/logout" class="layui-btn layui-btn-danger">
@@ -36,5 +44,111 @@
         </div>
     </div>
 </div>
+
+<script>
+    layui.use(['form', 'layer', 'element'], function () {
+        var form = layui.form;
+        var layer = layui.layer;
+        var element = layui.element;
+
+        // 监听按钮点击事件
+        document.getElementById('edit-info').onclick = function () {
+            layer.open({
+                type: 1,
+                title: '修改个人信息',
+                content: `
+                <form class="layui-form layui-form-pane" action="" style="width: 600px; height: 500px; padding: 10px;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" value="{{ user_dict.username }}" readonly placeholder="请输入用户名"
+                                autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">昵称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="nickname" required lay-verify="required" placeholder="请输入昵称" autocomplete="off"
+                                class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+                                class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" name="confirm_password" required lay-verify="required" placeholder="请再次输入密码"
+                                autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">头像</label>
+                        <div class="layui-input-block">
+                            <input type="file" id="ID-upload-demo-file" style="display: none;" name="avatar">
+                            <div class="layui-upload-list">
+                                <img class="layui-upload-img user-avatar" style="width: 100px; height: 100px;"
+                                    id="ID-upload-demo-img" alt="">
+                            </div>
+                            <button type="button" class="layui-btn" id="ID-upload-demo-btn">
+                                <i class="layui-icon layui-icon-upload"></i> 上传头像
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="save-info">提交修改</button>
+                        </div>
+                    </div>
+                </form>`,
+                area: ['700px', '600px'],
+                success: function (layero, index) {
+                    // 绑定上传按钮点击事件
+                    document.getElementById('ID-upload-demo-btn').onclick = function () {
+                        document.getElementById('ID-upload-demo-file').click();
+                    };
+
+                    // 监听文件选择
+                    document.getElementById('ID-upload-demo-file').onchange = function (event) {
+                        var file = event.target.files[0];
+                        if (file) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                document.getElementById('ID-upload-demo-img').src = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    };
+
+                    form.on('submit(save-info)', function (data) {
+                        var formData = new FormData(data.form);
+                        fetch('/user/api/edit', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.code === 200) {
+                                    layer.close(index);
+                                    layer.msg(result.message, { icon: 1 });
+                                    location.reload();
+                                } else {
+                                    layer.msg(result.message, { icon: 2 });
+                                }
+                            })
+                            .catch(error => {
+                                layer.msg('请求失败');
+                            });
+                        return false; // 阻止表单跳转
+                    });
+                }
+            });
+        };
+    });
+</script>
 
 {% endblock %}

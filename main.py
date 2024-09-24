@@ -71,6 +71,7 @@ route_modules = [
     "routes.tag.tag",
     "routes.tag.search_tag",
     "routes.user.user",
+    "routes.user.edit_user",
     "routes.user.get_user",
 ]
 # 动态导入模块并注册路由

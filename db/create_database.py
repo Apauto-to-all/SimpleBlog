@@ -41,12 +41,14 @@ async def create_tables():
     用户名（id）- 主键，用户自定义，使用字母+数字，唯一，2-15位
     密码 - 4-15位，包含字母和数字，加密后60位
     昵称 - 2-20位，不包含特殊字符
+    头像路径 - 用户头像的路径，可以为空
     """
     sql = """
     CREATE TABLE IF NOT EXISTS users (
         username varchar(15) NOT NULL,
         password varchar(60) NOT NULL,
         nickname varchar(20) NOT NULL,
+        avatar_path text,
         PRIMARY KEY (username)
     );
     """

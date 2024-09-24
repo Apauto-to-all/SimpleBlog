@@ -174,9 +174,26 @@ async def get_user_dict(username: str) -> dict:
         "username": 用户名,
         "password": 密码,
         "nickname": 昵称,
+        "avatar_path": 头像路径
     }
     """
     user_dict = await users_operate.users_select(username)
     if user_dict:
         return user_dict
     return {}
+
+
+# 更新用户信息
+async def update_user(username, nickname, password, avatar_path):
+    """
+    更新用户信息
+    :param username: 用户名
+    :param nickname: 昵称
+    :param password: 密码(加密后)
+    :param avatar_path: 头像路径
+    :return: 更新成功返回True，更新失败返回False
+    """
+    if not await users_operate.users_update(username, password, nickname, avatar_path):
+        logger.error("更新用户信息失败！")
+        return False
+    return True

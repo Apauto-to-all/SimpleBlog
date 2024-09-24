@@ -62,6 +62,7 @@ class UserOperation:
                     "username": user.get("username", None),
                     "password": user.get("password", None),
                     "nickname": user.get("nickname", None),
+                    "avatar_path": user.get("avatar_path", None),
                 }
                 logger.info(f"用户{username}的信息查询成功！")
             except Exception as e:
@@ -126,18 +127,50 @@ class UserOperation:
 
             return count if count else 0
 
+    # 更新用户信息
+    async def users_update(
+        self, username: str, password: str, nickname: str, avatar_path: str
+    ) -> bool:
+        """
+        更新用户信息
+        :param username: 用户名
+        :param password: 密码
+        :param nickname: 昵称
+        :param avatar_path: 头像路径
+        :return: 更新成功返回True，更新失败返回False
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                sql = """
+                UPDATE users 
+                SET password = $1, nickname = $2, avatar_path = $3 
+                WHERE username = $4;
+                """
+                await conn.execute(sql, password, nickname, avatar_path, username)
+                logger.info(f"用户{username}信息更新成功！")
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                return False
 
+            return True
+
+
+# 创建一个用户表
 """
 用户表：
 用户名（id）- 主键，用户自定义，使用字母+数字，唯一，2-15位
-密码 - 4-15位，包含字母和数字
+密码 - 4-15位，包含字母和数字，加密后60位
 昵称 - 2-20位，不包含特殊字符
+头像路径 - 用户头像的路径，可以为空
 """
-"""
+sql = """
 CREATE TABLE IF NOT EXISTS users (
     username varchar(15) NOT NULL,
-    password varchar(15) NOT NULL,
+    password varchar(60) NOT NULL,
     nickname varchar(20) NOT NULL,
+    avatar_path text,
     PRIMARY KEY (username)
 );
 """
