@@ -23,7 +23,7 @@ class AdminsOperate:
                 DO UPDATE SET end_time = EXCLUDED.end_time;
                 """
                 await conn.execute(sql, username, end_time)
-                logger.info(f"用户{username}成为管理员成功！")
+                logger.info(f"用户{username}成为管理员成功！结束时间为{end_time}")
                 return True
             except Exception as e:
                 error_info = traceback.format_exc()
@@ -60,11 +60,13 @@ class AdminsOperate:
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT end_time FROM admins WHERE username = $1;
+                SELECT end_time 
+                FROM admins 
+                WHERE username = $1;
                 """
                 end_time = await conn.fetchval(sql, username)
                 logger.info(f"用户{username}获取管理员持续时间成功！")
-                return end_time
+                return end_time if end_time else -1
             except Exception as e:
                 error_info = traceback.format_exc()
                 logger.error(error_info)

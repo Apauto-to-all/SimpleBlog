@@ -32,6 +32,7 @@ async def user(
     if user_dict and access_token and await login_util.is_login(access_token, username):
         # 去除密码
         user_dict.pop("password", None)
+        user_dict["is_admin"] = True if await admin_util.is_admin(username) else False
         return templates.TemplateResponse(
             "user/user.html",
             {

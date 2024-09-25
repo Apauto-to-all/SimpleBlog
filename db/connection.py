@@ -21,6 +21,7 @@ from .users_operate import UserOperation
 from .get_blogs import GetBlogs
 from .forbid_users import ForbidUserOperation
 from .forbid_blogs import ForbidBlogOperation
+from .admins_operate import AdminsOperate
 
 
 # 数据库操作类
@@ -31,6 +32,7 @@ class DatabaseOperation(
     GetBlogs,
     ForbidUserOperation,
     ForbidBlogOperation,
+    AdminsOperate,
 ):
     _instance = None  # 单例模式
     error_mun = 0  # 错误次数

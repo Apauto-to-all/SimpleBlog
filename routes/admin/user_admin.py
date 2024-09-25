@@ -26,8 +26,14 @@ async def get_users(
     page: int = Query(1),
     limit: int = Query(10),
 ):
-    if not access_token and not await login_util.is_login(access_token, "admin"):
-        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+    if not access_token:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
     start = (page - 1) * limit
     users_list = await admin_util.get_all_users(start=start, count=limit)
     all_users_count = await admin_util.get_all_users_count()
@@ -49,9 +55,14 @@ async def forbid_user(
         and not username
         and not isinstance(minutes, int)
         and minutes < 0
-        and not await login_util.is_login(access_token, "admin")
     ):
-        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     result = await admin_util.forbid_user(username, minutes)
     return (
@@ -67,14 +78,63 @@ async def unforbid_user(
     access_token: Optional[str] = Cookie(None),
     username: str = Query(None),
 ):
-    if (
-        not access_token
-        and not username
-        and not await login_util.is_login(access_token, "admin")
-    ):
-        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+    if not access_token and not username:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     result = await admin_util.unforbid_user(username)
+    return (
+        JSONResponse(content={"status": "success"}, status_code=200)
+        if result
+        else JSONResponse(content={"status": "fail"}, status_code=400)
+    )
+
+
+# 为用户添加管路权限
+@router.get("/admin/api/add_admin", response_class=JSONResponse)
+async def add_admin(
+    access_token: Optional[str] = Cookie(None),
+    username: str = Query(None),  # 用户名
+    days: int = Query(None),  # 管理员权限天数
+):
+    if not access_token and not username and not days and not isinstance(days, int):
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
+
+    result = await admin_util.add_admin(username, days)
+    return (
+        JSONResponse(content={"status": "success"}, status_code=200)
+        if result
+        else JSONResponse(content={"status": "fail"}, status_code=400)
+    )
+
+
+# 删除用户的管理员权限
+@router.get("/admin/api/delete_admin", response_class=JSONResponse)
+async def delete_admin(
+    access_token: Optional[str] = Cookie(None),
+    username: str = Query(None),  # 用户名
+):
+    if not access_token and not username:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
+
+    result = await admin_util.delete_admin(username)
     return (
         JSONResponse(content={"status": "success"}, status_code=200)
         if result

@@ -172,3 +172,46 @@ async def is_forbid_blog(blog_id: int):
     if await operate.is_forbid_blog(blog_id):
         return True
     return False
+
+
+# 判断用户是否为管理员
+async def is_admin(username: str):
+    """
+    判断用户是否为管理员
+    :param username: 用户名
+    :return: 是否为管理员
+    """
+    if username == "admin":
+        return True
+    admin_end_time = await operate.admin_end_time(username)
+    if admin_end_time != -1 and admin_end_time > int(time.time()):
+        return True
+    return False
+
+
+# 添加管理员
+async def add_admin(username: str, days: int):
+    """
+    添加管理员
+    :param username: 用户名
+    :param days: 管理员权限天数
+    :return: 是否成功
+    """
+    end_time = int(time.time()) + days * 24 * 60 * 60
+    result = await operate.admin_insert(username, end_time)
+    if result:
+        return True
+    return False
+
+
+# 删除管理员
+async def delete_admin(username: str):
+    """
+    删除管理员
+    :param username: 用户名
+    :return: 是否成功
+    """
+    result = await operate.admin_delete(username)
+    if result:
+        return True
+    return False

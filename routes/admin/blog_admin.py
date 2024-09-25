@@ -27,12 +27,14 @@ async def get_user_blogs(
     page: int = Query(1),
     limit: int = Query(10),
 ):
-    if (
-        not access_token
-        or not username
-        or not await login_util.is_login(access_token, "admin")
-    ):
-        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+    if not access_token or not username:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     start = (page - 1) * limit
     blogs_list = await blog_util.get_user_blogs_list(
@@ -51,12 +53,14 @@ async def forbid_blog(
     access_token: Optional[str] = Cookie(None),
     blog_id: int = Query(None),
 ):
-    if (
-        not access_token
-        and not blog_id
-        and not await login_util.is_login(access_token, "admin")
-    ):
-        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+    if not access_token and not blog_id:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     result = await admin_util.forbid_blog(blog_id)
     return (
@@ -72,12 +76,14 @@ async def unforbid_blog(
     access_token: Optional[str] = Cookie(None),
     blog_id: int = Query(None),
 ):
-    if (
-        not access_token
-        and not blog_id
-        and not await login_util.is_login(access_token, "admin")
-    ):
-        return JSONResponse(content={"error": "参数错误"}, status_code=400)
+    if not access_token and not blog_id:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if not (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     result = await admin_util.unforbid_blog(blog_id)
     return (

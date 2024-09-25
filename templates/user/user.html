@@ -23,7 +23,7 @@
             <a href="/user/{{ user_dict.username }}/blog" class="layui-btn layui-btn-primary">
                 <i class="layui-icon layui-icon-edit"></i> 进入创作中心
             </a>
-            {% if user_dict.username == 'admin' %}
+            {% if user_dict.is_admin %}
             <a href="/admin" class="layui-btn layui-btn-primary">
                 <i class="layui-icon layui-icon-set"></i> 进入后台管理
             </a>

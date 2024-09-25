@@ -130,7 +130,7 @@ async def get_access_jwt(user: str) -> str:
 # 验证JWT
 async def get_user_from_jwt(token: str) -> str:
     """
-    验证JWT，返回用户信息，如果Token无效，返回空字符串
+    验证JWT，返回用户名，如果Token无效，返回空字符串
     :param token: JWT Token
     :return: 用户信息，如果Token无效，返回None
     """
