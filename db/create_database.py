@@ -153,6 +153,21 @@ async def create_tables():
     """
     await conn.execute(sql)
 
+    # 是否是管理员表
+    """
+    管理员表，在表中的都是管理员：
+    用户名 - 外键，关联用户表
+    持续时间 - 管理员持续时间，使用int（time.time()）存储
+    """
+    sql = """
+    CREATE TABLE IF NOT EXISTS admins (
+        username varchar(15) REFERENCES users(username) not null,
+        end_time int not null,
+        PRIMARY KEY (username)
+    );
+    """
+    await conn.execute(sql)
+
     await conn.close()
 
 

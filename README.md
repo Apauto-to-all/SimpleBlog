@@ -22,3 +22,5 @@ pip install -r requirements.txt
 - [x] 用户自己修改信息功能
 
 **❌** ~~评论功能~~
+
+- [ ] 管理员权限赋予功能
