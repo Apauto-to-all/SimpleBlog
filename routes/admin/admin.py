@@ -32,7 +32,9 @@ async def admin(
             and await login_util.is_login(access_token, username_use)
             and await admin_util.is_admin(username_use)
         ):
-            return templates.TemplateResponse("admin/admin.html", {"request": request})
+            return templates.TemplateResponse(
+                "admin/admin.html", {"request": request, "username_use": username_use}
+            )
     return RedirectResponse("/login", status_code=302)
 
 

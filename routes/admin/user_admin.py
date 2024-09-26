@@ -50,12 +50,8 @@ async def forbid_user(
     username: str = Query(None),
     minutes: int = Query(0),  # 默认禁言 0 分钟
 ):
-    if (
-        not access_token
-        or not username
-        or not isinstance(minutes, int)
-        or not minutes < 0
-    ):
+    if not access_token or not username or not isinstance(minutes, int) or minutes < 0:
+        logger.error("禁言用户，参数错误")
         return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     username_use = await login_util.get_user_from_jwt(access_token)
@@ -66,6 +62,7 @@ async def forbid_user(
     ):
         # 如果用户不是超级管理员，不能禁言其他管理员
         if await admin_util.is_admin(username) and username_use != "admin":
+            logger.error("用户不是超级管理员，不能禁言其他管理员")
             return JSONResponse(content={"status": "fail"}, status_code=400)
 
         result = await admin_util.forbid_user(username, minutes)
@@ -92,6 +89,7 @@ async def unforbid_user(
     ):
         # 如果用户不是超级管理员，不能解除其他管理员的禁言
         if await admin_util.is_admin(username) and username_use != "admin":
+            logger.error("用户不是超级管理员，不能解除其他管理员的禁言")
             return JSONResponse(content={"status": "fail"}, status_code=400)
 
         result = await admin_util.unforbid_user(username)

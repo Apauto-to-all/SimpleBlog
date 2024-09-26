@@ -11,6 +11,9 @@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-sm" lay-event="toggleMute">管理禁言</a>
     <a class="layui-btn layui-btn-sm" lay-event="manageBlog">管理博客</a>
+    {% if username_use == "admin" %}
+    <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="toolAdmin">赋权</a>
+    {% endif %}
     <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
 </script>
 
@@ -26,16 +29,18 @@
             method: 'GET',
             page: true, // 开启分页
             cols: [[ // 表头
-                { field: 'username', title: '用户名', width: 200 },
-                { field: 'nickname', title: '昵称', width: 200 },
+                { field: 'username', title: '用户名', align: 'center', width: 150 },
+                { field: 'nickname', title: '昵称', align: 'center', width: 150 },
                 {
-                    field: 'is_forbid', title: '禁言状态', width: 100, templet: function (d) {
-                        return d.is_forbid ? '已禁言' : '正常';
+                    field: 'is_forbid', title: '禁言状态', align: 'center', width: 100, templet: function (d) {
+                        return d.is_forbid ? '<span style="color: red;">已禁言</span>' : '<span style="color: green;">未禁言</span>';
                     }
                 },
-                { field: 'forbid_end_time', title: '禁言结束时间', width: 200 },
-                { field: 'forbid_remaining_time', title: '剩余禁言时间', width: 200 },
-                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 250 }
+                { field: 'forbid_end_time', title: '禁言结束时间', align: 'center', width: 180 },
+                { field: 'forbid_remaining_time', title: '剩余禁言时间', align: 'center', width: 150 },
+                { field: 'is_admin', title: '身份', align: 'center', width: 150, templet: function (d) { return d.is_admin ? '<span style="color: red;">管理员</span>' : '<span style="color: green;">普通用户</span>'; } },
+                { field: 'admin_end_time', title: '管理员权限结束时间', align: 'center', width: 180 },
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', width: 350 }
             ]]
         });
 
@@ -81,6 +86,39 @@
             } else if (obj.event === 'manageBlog') {
                 // 跳转到管理用户博客页面
                 window.location.href = `/admin/${data.username}/blog`;
+            } else if (obj.event === 'toolAdmin') {
+                if (data.is_admin) {
+                    layer.confirm('确定要取消管理员身份吗？', function (index) {
+                        fetch(`/admin/api/delete_admin?username=${data.username}`, {
+                            method: 'GET'
+                        }).then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    layer.msg('已取消管理员身份', { icon: 1 });
+                                    table.reload('user'); // 重新加载表格数据
+                                } else {
+                                    layer.msg('操作失败', { icon: 2 });
+                                }
+                            });
+                        layer.close(index);
+                    });
+                }
+                else {
+                    layer.prompt({ title: '请输入赋予管理员身份时间（天数）', formType: 0 }, function (value, index) {
+                        fetch(`/admin/api/add_admin?username=${data.username}&days=${value}`, {
+                            method: 'GET'
+                        }).then(response => response.json())
+                            .then(result => {
+                                if (result.status === 'success') {
+                                    layer.msg('已赋予管理员身份', { icon: 1 });
+                                    table.reload('user'); // 重新加载表格数据
+                                } else {
+                                    layer.msg('操作失败', { icon: 2 });
+                                }
+                            });
+                        layer.close(index);
+                    });
+                }
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么？仅删除表格的这条用户信息', function (index) {
                     obj.del();
@@ -88,7 +126,6 @@
                 });
             }
         });
-
     });
 </script>
 

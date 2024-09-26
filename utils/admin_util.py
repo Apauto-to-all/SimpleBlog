@@ -46,6 +46,30 @@ async def get_all_users(start: int, count: int):
             user_info["forbid_remaining_time"] = time.strftime(
                 "%H:%M:%S", time.gmtime(user_info["forbid_remaining_time"])
             )
+    # 是否为管理员
+    for user_info in users_list:
+        # 判断用户是否为管理员
+        user_info["is_admin"] = await is_admin(user_info["username"])
+        # 管理员身份结束时间
+        user_info["admin_end_time"] = (
+            await operate.admin_end_time(user_info["username"])
+            if user_info["is_admin"]
+            else -1
+        )
+        # 如果是管理员，转化为时间格式
+        if user_info["is_admin"]:
+            user_info["admin_end_time"] = (
+                (
+                    time.strftime(
+                        "%Y-%m-%d %H:%M:%S",
+                        time.localtime(
+                            await operate.admin_end_time(user_info["username"])
+                        ),
+                    )
+                    if user_info["username"] != "admin"
+                    else "-1"
+                ),
+            )
     [
         {
             "username": "test",
@@ -53,6 +77,8 @@ async def get_all_users(start: int, count: int):
             "is_forbid": False,
             "forbid_end_time": -1,
             "forbid_remaining_time": -1,
+            "is_admin": False,
+            "admin_end_time": -1,
         },
         {
             "username": "test2",
@@ -60,6 +86,8 @@ async def get_all_users(start: int, count: int):
             "is_forbid": True,
             "forbid_end_time": "2021-07-01 00:00:00",
             "forbid_remaining_time": "00:00:00",
+            "is_admin": True,
+            "admin_end_time": "2021-07-01 00:00:00",
         },
     ]
     return users_list

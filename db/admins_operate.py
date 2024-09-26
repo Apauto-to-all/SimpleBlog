@@ -53,7 +53,7 @@ class AdminsOperate:
 
     async def admin_end_time(self, username: str):
         """
-        获取管理员持续时间
+        获取管理员权限结束时间
         :param username: 用户名
         :return: 获取成功返回管理员持续时间，获取失败返回None
         """
