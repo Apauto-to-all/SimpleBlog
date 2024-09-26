@@ -15,7 +15,7 @@ layui.use(function () {
         })
             .then(response => {
                 if (response.redirected) {
-                    layer.alert('登录成功,点击确定跳转到用户中心', { icon: 6 }, function () {
+                    layer.msg('登录成功,点击确定跳转到用户中心', { icon: 6, time: 1000 }, function () {
                         window.location.href = response.url;
                     });
                 } else {
