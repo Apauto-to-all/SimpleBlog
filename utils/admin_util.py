@@ -70,6 +70,10 @@ async def get_all_users(start: int, count: int):
                     else "-1"
                 ),
             )
+    # 拥有的博客数量
+    for user_info in users_list:
+        user_info["blog_count"] = await operate.blogs_count(user_info["username"])
+
     [
         {
             "username": "test",
@@ -79,6 +83,7 @@ async def get_all_users(start: int, count: int):
             "forbid_remaining_time": -1,
             "is_admin": False,
             "admin_end_time": -1,
+            "blog_count": 0,
         },
         {
             "username": "test2",
@@ -88,6 +93,7 @@ async def get_all_users(start: int, count: int):
             "forbid_remaining_time": "00:00:00",
             "is_admin": True,
             "admin_end_time": "2021-07-01 00:00:00",
+            "blog_count": 1,
         },
     ]
     return users_list

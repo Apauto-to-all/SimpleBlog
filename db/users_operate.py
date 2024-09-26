@@ -86,6 +86,7 @@ class UserOperation:
                 sql = """
                 SELECT username, password, nickname
                 FROM users
+                ORDER BY username ASC
                 LIMIT $1 OFFSET $2;
                 """
                 users = await conn.fetch(sql, count, start)
