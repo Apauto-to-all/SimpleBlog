@@ -23,4 +23,4 @@ pip install -r requirements.txt
 
 **❌** ~~评论功能~~
 
-- [ ] 管理员权限赋予功能
+- [x] 管理员权限赋予功能
