@@ -138,3 +138,19 @@ async def is_pass_blog(blog_id: int):
     """
     result = await operate.need_check_blogs_is_pass(blog_id)
     return result
+
+
+# 博客是否私有
+async def is_private_blog(blog_id: int):
+    """
+    博客是否需要审核
+    :param blog_id: 博客id
+    :return: 博客需要审核返回True，博客不需要审核返回False
+    """
+    if await operate.need_check_blogs_is_exist(blog_id) == False:
+        blog_info = await operate.blogs_select(blog_id)
+        is_public = blog_info.get("is_public")
+        if is_public == False:
+            return True
+
+    return False

@@ -210,6 +210,9 @@ async def get_new_blogs_list(blogs_list: list) -> list:
             "is_pass": await check_util.is_pass_blog(
                 blog_info.get("blog_id")
             ),  # 是否通过审核
+            "is_private": await check_util.is_private_blog(
+                blog_info.get("blog_id")
+            ),  # 是否不私有
         }
         new_blogs_list.append(blog_dict)
     return new_blogs_list

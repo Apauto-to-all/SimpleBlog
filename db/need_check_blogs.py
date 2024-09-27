@@ -182,6 +182,28 @@ class NeedCheckBlogs:
                 logger.error(e)
                 return False
 
+    # 博客id是否存在
+    async def need_check_blogs_is_exist(self, blog_id: int):
+        """
+        博客id是否存在
+        :param blog_id: 博客id
+        :return: 存在返回True，不存在返回False
+        """
+        async with self.pool.acquire() as conn:
+            try:
+                sql = """
+                SELECT blog_id
+                FROM need_check_blogs 
+                WHERE blog_id = $1;
+                """
+                info = await conn.fetchval(sql, blog_id)
+                return True if info else False
+            except Exception as e:
+                error_info = traceback.format_exc()
+                logger.error(error_info)
+                logger.error(e)
+                return False
+
 
 # 创建一个需要审核的博客表格，用于存储需要审核的博客
 """
