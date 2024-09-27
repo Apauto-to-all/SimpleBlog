@@ -168,6 +168,29 @@ async def create_tables():
     """
     await conn.execute(sql)
 
+    # 创建一个需要审核的博客表格，用于存储需要审核的博客
+    """
+    需要审核的博客表：
+    博客id - 外键，关联博客表
+    博客添加时间 - 使用时间戳存储，int（time.time()）格式
+    是否被审核 - 管理员是否审核博客，true为已审核，false为未审核，默认为false
+    审核状态 - 是否审核通过，true为通过，false为未通过，默认为空
+    审核时间 - 使用时间戳存储，int（time.time()）格式
+    审核人 - 外键，关联用户表
+    """
+    sql = """
+    CREATE TABLE IF NOT EXISTS need_check_blogs (
+        blog_id int REFERENCES blogs(blog_id) not null,
+        add_time int,
+        is_check boolean DEFAULT false,
+        is_pass boolean,
+        check_time int,
+        check_user varchar(15) REFERENCES users(username),
+        PRIMARY KEY (blog_id)
+    );
+    """
+    await conn.execute(sql)
+
     await conn.close()
 
 

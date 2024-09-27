@@ -3,7 +3,7 @@ from db.connection import DatabaseOperation
 import logging
 import pytz
 
-from utils import admin_util
+from utils import admin_util, check_util
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +77,8 @@ async def write_blog(
         logger.error("博客写入失败！")
         return -1
     if is_public:
-        if not await blogs_operation.blogs_set_public(blog_id):
-            logger.error("博客设置公开失败！")
-            return -1
+        await blogs_operation.blogs_set_private(blog_id)  # 设置博客私有
+        await check_util.insert_need_check_blogs(blog_id)  # 插入需要审核的博客
     if not await blogs_operation.tags_insert(tags_list, blog_id):
         logger.error("博客标签写入失败！")
         return -1
@@ -115,8 +114,8 @@ async def revise_blog(
     await blogs_operation.blogs_update(blog_id, title, content)
     await blogs_operation.tags_insert(tags_list, blog_id)
     if is_public:
-        await blogs_operation.blogs_set_public(blog_id)
-
+        await blogs_operation.blogs_set_private(blog_id)  # 设置博客私有
+        await check_util.insert_need_check_blogs(blog_id)
     return True
 
 
@@ -200,9 +199,17 @@ async def get_new_blogs_list(blogs_list: list) -> list:
             "last_modified": blog_info.get("last_modified")
             .astimezone(china_tz)
             .strftime("%Y-%m-%d %H:%M:%S"),  # 最后修改时间
-            "tags": await blogs_operation.tags_select(blog_info.get("blog_id")),
-            "is_public": blog_info.get("is_public"),
-            "is_forbid_blog": await admin_util.is_forbid_blog(blog_info.get("blog_id")),
+            "tags": await blogs_operation.tags_select(blog_info.get("blog_id")),  # 标签
+            "is_public": blog_info.get("is_public"),  # 是否公开
+            "is_forbid_blog": await admin_util.is_forbid_blog(
+                blog_info.get("blog_id")
+            ),  # 是否禁止公开
+            "is_check": await check_util.is_check_blog(
+                blog_info.get("blog_id")
+            ),  # 是否审核
+            "is_pass": await check_util.is_pass_blog(
+                blog_info.get("blog_id")
+            ),  # 是否通过审核
         }
         new_blogs_list.append(blog_dict)
     return new_blogs_list

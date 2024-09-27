@@ -42,8 +42,8 @@ async def write_blog(
                 blog_id, title, markdown_content, tags, is_public
             )
             if result:
-                if is_public:
-                    return RedirectResponse(f"/blog/{blog_id}", status_code=302)
+                # if is_public:
+                #     return RedirectResponse(f"/blog/{blog_id}", status_code=302)
                 return RedirectResponse(f"/user/{username}/blog", status_code=302)
     # 跳转自定义错误页面
     return {"error": "用户验证失败，或者博客修改失败！"}
@@ -67,8 +67,8 @@ async def write_blog(
                 username, title, markdown_content, tags, is_public
             )
             if blog_id != -1:
-                if is_public:
-                    return RedirectResponse(f"/blog/{blog_id}", status_code=302)
+                # if is_public:
+                #     return RedirectResponse(f"/blog/{blog_id}", status_code=302)
                 return RedirectResponse(f"/user/{username}/blog", status_code=302)
     # 跳转自定义错误页面
     return {"error": "用户验证失败，或者博客写入失败！"}

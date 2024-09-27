@@ -35,7 +35,8 @@ async def get_users(
         ):
             return JSONResponse(content={"error": "参数错误"}, status_code=400)
     start = (page - 1) * limit
-    users_list = await admin_util.get_all_users(start=start, count=limit)
+    username_use = await login_util.get_user_from_jwt(access_token)
+    users_list = await admin_util.get_all_users(username_use, start=start, count=limit)
     all_users_count = await admin_util.get_all_users_count()
     return JSONResponse(
         content={"code": 0, "msg": "", "count": all_users_count, "data": users_list},

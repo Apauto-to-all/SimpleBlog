@@ -11,7 +11,7 @@ operate = DatabaseOperation()
 
 
 # 获取所有用户信息，返回一个列表，从 start 开始，数量为 count
-async def get_all_users(start: int, count: int):
+async def get_all_users(username_use, start: int, count: int):
     """
     获取所有用户信息
     :param start: 开始位置
@@ -73,6 +73,11 @@ async def get_all_users(start: int, count: int):
     # 拥有的博客数量
     for user_info in users_list:
         user_info["blog_count"] = await operate.blogs_count(user_info["username"])
+    # 弹出管理员用户信息，但保留自己的信息，超级管理员除外
+    if username_use != "admin":
+        for user_info in users_list:
+            if user_info["is_admin"] and user_info["username"] != username_use:
+                users_list.remove(user_info)
 
     [
         {
