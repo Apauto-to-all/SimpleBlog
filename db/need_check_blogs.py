@@ -164,7 +164,7 @@ class NeedCheckBlogs:
                 FROM need_check_blogs 
                 WHERE blog_id = $1;
                 """
-                info = await conn.fetchval(sql, blog_id)
+                info = await conn.fetchrow(sql, blog_id)
                 if info is None:
                     return True
                 return info.get("is_check")
@@ -188,7 +188,7 @@ class NeedCheckBlogs:
                 FROM need_check_blogs 
                 WHERE blog_id = $1;
                 """
-                info = await conn.fetchval(sql, blog_id)
+                info = await conn.fetchrow(sql, blog_id)
                 if info is None:
                     return True
                 return info.get("is_pass")
