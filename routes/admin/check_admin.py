@@ -36,9 +36,7 @@ async def get_user_blogs(
             return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     start = (page - 1) * limit
-    blogs_list = await check_util.get_need_check_blogs(
-        start=start, count=limit, is_all=True
-    )
+    blogs_list = await check_util.get_need_check_blogs(start=start, count=limit)
     blogs_count = await check_util.get_need_check_blogs_count()
     return JSONResponse(
         content={"code": 0, "msg": "", "count": blogs_count, "data": blogs_list},
@@ -89,6 +87,7 @@ async def check_blog(
         ):
             return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
+    username_use = await login_util.get_user_from_jwt(access_token)
     result = await check_util.pass_check_blog(blog_id, username_use, is_pass)
     return (
         JSONResponse(content={"status": "success"}, status_code=200)

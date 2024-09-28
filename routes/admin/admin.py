@@ -11,7 +11,7 @@ from typing import Optional  # 功能：用于声明可选参数
 
 import logging
 
-from utils import blog_util, login_util, admin_util
+from utils import blog_util, login_util, admin_util, check_util
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +32,14 @@ async def admin(
             and await login_util.is_login(access_token, username_use)
             and await admin_util.is_admin(username_use)
         ):
+            need_check_count = await check_util.get_need_check_blogs_count()
             return templates.TemplateResponse(
-                "admin/admin.html", {"request": request, "username_use": username_use}
+                "admin/admin.html",
+                {
+                    "request": request,
+                    "username_use": username_use,
+                    "need_check_count": need_check_count,
+                },
             )
     return RedirectResponse("/login", status_code=302)
 
@@ -54,5 +60,25 @@ async def admin_user_blog(
         ):
             return templates.TemplateResponse(
                 "admin/admin_user_blog.html", {"request": request, "username": username}
+            )
+    return RedirectResponse("/login", status_code=302)
+
+
+# 审核需要审核的博客页面
+@router.get("/admin/check", response_class=HTMLResponse)
+async def admin_check(
+    request: Request,
+    access_token: Optional[str] = Cookie(None),
+):
+    if access_token:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return templates.TemplateResponse(
+                "admin/admin_check.html",
+                {"request": request},
             )
     return RedirectResponse("/login", status_code=302)

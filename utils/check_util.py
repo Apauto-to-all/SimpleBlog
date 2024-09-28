@@ -26,33 +26,53 @@ async def insert_need_check_blogs(blog_id: int):
 
 # 博客格式化
 async def format_blog(checked_blogs_list: dict) -> dict:
+    formatted_blogs = []
     for blog in checked_blogs_list:
-        blog["add_time"] = time.strftime(
-            "%Y-%m-%d %H:%M:%S", time.localtime(blog["add_time"])
-        )
-        blog["check_time"] = time.strftime(
-            "%Y-%m-%d %H:%M:%S", time.localtime(blog["check_time"])
-        )
-    return checked_blogs_list
+        blog_dict = dict(blog)  # 将 asyncpg.Record 转换为字典
+        if "add_time" in blog:
+            blog_dict["add_time"] = time.strftime(
+                "%Y-%m-%d %H:%M:%S", time.localtime(blog.get("add_time"))
+            )
+        else:
+            blog_dict["add_time"] = -1
+        if "check_time" in blog:
+            blog_dict["check_time"] = time.strftime(
+                "%Y-%m-%d %H:%M:%S", time.localtime(blog.get("check_time"))
+            )
+        else:
+            blog_dict["check_time"] = -1
+        blog_id = blog["blog_id"]
+        blog_info = await operate.blogs_select(blog_id)
+        blog_dict["title"] = blog_info.get("title")
+        blog_dict["content"] = blog_info.get("content")
+        tags_list = await operate.tags_select(blog_id)
+        blog_dict["tags"] = tags_list
+        formatted_blogs.append(blog_dict)
+    return formatted_blogs
 
 
 # 获取所有已经审核的博客
-async def get_checked_blogs():
+async def get_checked_blogs(start: int, count: int):
     """
     获取所有已经审核的博客
+    :param start: 开始位置
+    :param count: 获取数量
     :return: 返回所有已经审核的博客
     """
     logger.info("开始获取所有已经审核的博客")
-    checked_blogs_list = await operate.need_check_blogs_get_checked()
+    checked_blogs_list = await operate.need_check_blogs_get_checked(start, count)
     # 添加博客内容
     [
         {
             "blog_id": 1,  # 博客id
+            "title": "博客标题",  # 博客标题
+            "content": "博客内容",  # 博客内容
+            "tags": "博客标签",  # 博客标签
             "add_time": "2021-01-01 00:00:00",  # 添加时间
-            "is_check": False,  # 是否审核
+            "is_check": True,  # 是否审核
             "is_pass": False,  # 是否通过审核
             "check_time": "2021-01-01 00:00:00",  # 审核时间
-            "check_user": None,  # 审核人
+            "check_user": "admin",  # 审核人
         }
     ]
     return await format_blog(checked_blogs_list)
@@ -64,21 +84,26 @@ async def get_checked_blogs_count():
     获取所有已经审核的博客数量
     :return: 返回所有已经审核的博客数量
     """
-    checked_blogs_count = await operate.need_check_blogs_get_checked_count()
+    checked_blogs_count = await operate.need_check_blogs_get_checkde_count()
     return checked_blogs_count
 
 
 # 获取所有需要审核的博客
-async def get_need_check_blogs():
+async def get_need_check_blogs(start: int, count: int):
     """
     获取所有需要审核的博客
+    :param start: 开始位置
+    :param count: 获取数量
     :return: 返回所有需要审核的博客
     """
-    need_check_blogs_list = await operate.need_check_blogs_get_not_check()
+    need_check_blogs_list = await operate.need_check_blogs_get_not_check(start, count)
     # 添加博客内容
     [
         {
             "blog_id": 1,  # 博客id
+            "title": "博客标题",  # 博客标题
+            "content": "博客内容",  # 博客内容
+            "tags": "博客标签",  # 博客标签
             "add_time": "2021-01-01 00:00:00",  # 添加时间
             "is_check": False,  # 是否审核
             "is_pass": False,  # 是否通过审核
@@ -95,7 +120,7 @@ async def get_need_check_blogs_count():
     获取所有需要审核的博客数量
     :return: 返回所有需要审核的博客数量
     """
-    need_check_blogs_count = await operate.need_check_blogs_get_check_count()
+    need_check_blogs_count = await operate.need_check_blogs_get_not_check_count()
     return need_check_blogs_count
 
 

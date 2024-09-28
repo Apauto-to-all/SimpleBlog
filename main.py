@@ -55,6 +55,7 @@ route_modules = [
     "routes.index",
     "routes.admin.admin",
     "routes.admin.blog_admin",
+    "routes.admin.check_admin",
     "routes.admin.user_admin",
     "routes.author.author",
     "routes.blog.blog",

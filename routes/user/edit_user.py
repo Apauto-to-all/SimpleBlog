@@ -60,12 +60,15 @@ async def edit_user(
     if not os.path.exists(os.path.dirname(avatar_path)):
         os.makedirs(os.path.dirname(avatar_path))
 
-    # 保存头像并调整大小
-    image = Image.open(avatar.file)
-    width_percent = 100 / float(image.size[0])
-    height_size = int((float(image.size[1]) * float(width_percent)))
-    image = image.resize((100, height_size), Image.LANCZOS)
-    image.save(avatar_path)
+    try:
+        # 保存头像并调整大小
+        image = Image.open(avatar.file)
+        width_percent = 100 / float(image.size[0])
+        height_size = int((float(image.size[1]) * float(width_percent)))
+        image = image.resize((100, height_size), Image.LANCZOS)
+        image.save(avatar_path)
+    except Exception as e:
+        pass
 
     await login_util.update_user(username, nickname, hashed_password, avatar_path)
 

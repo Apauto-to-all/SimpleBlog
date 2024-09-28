@@ -58,18 +58,24 @@ class NeedCheckBlogs:
                 logger.error(e)
                 return False
 
-    # 获取所有博客信息，包括未审核和已审核的博客
-    async def need_check_blogs_get_not_check(self):
+    # 获取所有博客信息，包括未审核的博客
+    async def need_check_blogs_get_not_check(self, start: int, count: int):
         """
         获取所有未审核的博客
+        :param start: 开始位置
+        :param count: 获取数量
         :return: 返回所有未审核的博客
         """
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT * FROM need_check_blogs WHERE is_check = false;
+                SELECT * 
+                FROM need_check_blogs 
+                WHERE is_check = false
+                ORDER BY add_time DESC
+                LIMIT $1 OFFSET $2;
                 """
-                blog_ids = await conn.fetch(sql)
+                blog_ids = await conn.fetch(sql, count, start)
                 return blog_ids
             except Exception as e:
                 error_info = traceback.format_exc()
@@ -86,7 +92,9 @@ class NeedCheckBlogs:
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT COUNT(*) FROM need_check_blogs WHERE is_check = false;
+                SELECT COUNT(*) 
+                FROM need_check_blogs 
+                WHERE is_check = false;
                 """
                 blog_ids = await conn.fetchval(sql)
                 return blog_ids
@@ -97,17 +105,23 @@ class NeedCheckBlogs:
                 return 0
 
     # 获取所有已审核的博客信息
-    async def need_check_blogs_get_check(self):
+    async def need_check_blogs_get_checked(self, start: int, count: int):
         """
         获取所有已审核的博客
+        :param start: 开始位置
+        :param count: 获取数量
         :return: 返回所有已审核的博客
         """
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT * FROM need_check_blogs WHERE is_check = true;
+                SELECT * 
+                FROM need_check_blogs 
+                WHERE is_check = true
+                ORDER BY check_time DESC
+                LIMIT $1 OFFSET $2;
                 """
-                blog_ids = await conn.fetch(sql)
+                blog_ids = await conn.fetch(sql, count, start)
                 return blog_ids
             except Exception as e:
                 error_info = traceback.format_exc()
@@ -116,7 +130,7 @@ class NeedCheckBlogs:
                 return []
 
     # 获取所有已审核的博客数量
-    async def need_check_blogs_get_check_count(self):
+    async def need_check_blogs_get_checkde_count(self):
         """
         获取所有已审核的博客数量
         :return: 返回所有已审核的博客数量
@@ -124,7 +138,9 @@ class NeedCheckBlogs:
         async with self.pool.acquire() as conn:
             try:
                 sql = """
-                SELECT COUNT(*) FROM need_check_blogs WHERE is_check = true;
+                SELECT COUNT(*) 
+                FROM need_check_blogs 
+                WHERE is_check = true;
                 """
                 blog_ids = await conn.fetchval(sql)
                 return blog_ids
