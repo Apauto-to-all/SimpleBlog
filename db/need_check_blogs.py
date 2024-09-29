@@ -105,7 +105,9 @@ class NeedCheckBlogs:
                 return 0
 
     # 获取所有已审核的博客信息
-    async def need_check_blogs_get_checked(self, start: int, count: int):
+    async def need_check_blogs_get_checked(
+        self, start: int, count: int, is_pass: str = None
+    ):
         """
         获取所有已审核的博客
         :param start: 开始位置
@@ -114,14 +116,24 @@ class NeedCheckBlogs:
         """
         async with self.pool.acquire() as conn:
             try:
-                sql = """
-                SELECT * 
-                FROM need_check_blogs 
-                WHERE is_check = true
-                ORDER BY check_time DESC
-                LIMIT $1 OFFSET $2;
-                """
-                blog_ids = await conn.fetch(sql, count, start)
+                if is_pass is not None:
+                    sql = """
+                    SELECT * 
+                    FROM need_check_blogs 
+                    WHERE is_check = true AND is_pass = $1
+                    ORDER BY check_time DESC
+                    LIMIT $2 OFFSET $3;
+                    """
+                    blog_ids = await conn.fetch(sql, is_pass, count, start)
+                else:
+                    sql = """
+                    SELECT * 
+                    FROM need_check_blogs 
+                    WHERE is_check = true
+                    ORDER BY check_time DESC
+                    LIMIT $1 OFFSET $2;
+                    """
+                    blog_ids = await conn.fetch(sql, count, start)
                 return blog_ids
             except Exception as e:
                 error_info = traceback.format_exc()

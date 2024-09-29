@@ -5,6 +5,15 @@
 {% block content %}
 
 <div style="padding: 16px;">
+    <!-- 筛选功能 -->
+    <div style="margin-bottom: 16px;">
+        <select id="isPassFilter" class="layui-select" style="width: 150px; display: inline-block;">
+            <option value="">是否通过审核？</option>
+            <option value="true">通过</option>
+            <option value="false">未通过</option>
+        </select>
+        <button id="filterButton" class="layui-btn layui-btn-normal">筛选</button>
+    </div>
     <table class="layui-hide" id="blog" lay-filter="blog"></table>
 </div>
 
@@ -18,12 +27,13 @@
 <link rel="stylesheet" href="/static/css/github-markdown-light.css">
 
 <script>
-    layui.use(['table', 'layer'], function () {
+    layui.use(['table', 'layer', 'form'], function () {
         var table = layui.table;
         var layer = layui.layer;
+        var form = layui.form;
 
         // 初始化表格
-        table.render({
+        var tableIns = table.render({
             elem: '#blog',
             url: '/admin/api/get_user_blogs_checked', // 数据接口
             method: 'GET',
@@ -49,6 +59,28 @@
                 },
                 { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 100, align: 'center' }
             ]]
+        });
+
+        // 筛选功能
+        document.getElementById('filterButton').addEventListener('click', function () {
+            var isPassValue = document.getElementById('isPassFilter').value;
+            if (isPassValue === '') {
+                tableIns.reload({
+                    where: {},
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    }
+                });
+            } else {
+                tableIns.reload({
+                    where: { // 设定异步数据接口的额外参数，任意设
+                        is_pass: isPassValue
+                    },
+                    page: {
+                        curr: 1 // 重新从第 1 页开始
+                    }
+                });
+            }
         });
 
         // 监听工具条

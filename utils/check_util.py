@@ -69,7 +69,7 @@ async def format_blog(checked_blogs_list: dict) -> dict:
 
 
 # 获取所有已经审核的博客
-async def get_checked_blogs(start: int, count: int):
+async def get_checked_blogs(start: int, count: int, is_pass: str = None):
     """
     获取所有已经审核的博客
     :param start: 开始位置
@@ -77,7 +77,9 @@ async def get_checked_blogs(start: int, count: int):
     :return: 返回所有已经审核的博客
     """
     logger.info("开始获取所有已经审核的博客")
-    checked_blogs_list = await operate.need_check_blogs_get_checked(start, count)
+    checked_blogs_list = await operate.need_check_blogs_get_checked(
+        start, count, is_pass
+    )
     return await format_blog(checked_blogs_list)
 
 
