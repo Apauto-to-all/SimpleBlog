@@ -11,7 +11,7 @@ operate = DatabaseOperation()
 
 
 # 获取所有用户信息，返回一个列表，从 start 开始，数量为 count
-async def get_all_users(username_use, start: int, count: int):
+async def get_all_users(username_use, start: int, count: int, search: str = None):
     """
     获取所有用户信息
     :param start: 开始位置
@@ -19,7 +19,8 @@ async def get_all_users(username_use, start: int, count: int):
     :return: 用户信息列表
     """
     logger.info("开始获取所有用户信息")
-    users_list = await operate.users_select_all(start, count)
+    users_list = await operate.users_select_all(start, count, search)
+
     # 去除密码信息
     for user_info in users_list:
         user_info.pop("password")

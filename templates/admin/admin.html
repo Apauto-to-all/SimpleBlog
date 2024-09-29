@@ -14,6 +14,12 @@
         onclick="window.location.href = '/admin/checked';">
         查看已审核的博客
     </button>
+    <!-- 添加搜索框 -->
+    <div style="margin-bottom: 16px;">
+        <input type="text" id="searchInput" placeholder="搜索用户名或昵称" class="layui-input"
+            style="width: 300px; display: inline-block;">
+        <button id="searchButton" class="layui-btn layui-btn-normal">搜索</button>
+    </div>
     <table class="layui-hide" id="user" lay-filter="user"></table>
 </div>
 <!-- 工具条模板 -->
@@ -52,6 +58,25 @@
                 { field: 'blog_count', title: '博客数量', align: 'center', width: 100 },
                 { fixed: 'right', title: '操作', toolbar: '#barDemo', align: 'center', width: 350 }
             ]]
+        });
+
+        // 搜索功能
+        function performSearch() {
+            var searchValue = document.getElementById('searchInput').value;
+            table.reload('user', {
+                where: { // 设定异步数据接口的额外参数，任意设
+                    search: searchValue
+                },
+                page: {
+                    curr: 1 // 重新从第 1 页开始
+                }
+            });
+        }
+        document.getElementById('searchButton').addEventListener('click', performSearch);
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
         });
 
         // 监听工具条

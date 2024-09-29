@@ -74,7 +74,9 @@ class UserOperation:
             return user_dict if user_dict else {}
 
     # 查询所有用户信息，返回用户信息列表
-    async def users_select_all(self, start: int = 0, count: int = 10) -> list:
+    async def users_select_all(
+        self, start: int = 0, count: int = 10, search: str = None
+    ) -> list:
         """
         查询所有用户信息
         :param start: 起始位置
@@ -83,13 +85,23 @@ class UserOperation:
         """
         async with self.pool.acquire() as conn:
             try:
-                sql = """
-                SELECT username, password, nickname
-                FROM users
-                ORDER BY username ASC
-                LIMIT $1 OFFSET $2;
-                """
-                users = await conn.fetch(sql, count, start)
+                if search:
+                    sql = """
+                    SELECT username, password, nickname
+                    FROM users
+                    WHERE username ILIKE $1 OR nickname ILIKE $1
+                    ORDER BY username ASC
+                    LIMIT $2 OFFSET $3;
+                    """
+                    users = await conn.fetch(sql, f"%{search}%", count, start)
+                else:
+                    sql = """
+                    SELECT username, password, nickname
+                    FROM users
+                    ORDER BY username ASC
+                    LIMIT $1 OFFSET $2;
+                    """
+                    users = await conn.fetch(sql, count, start)
                 users_list = []
                 for user in users:
                     user_dict = {
