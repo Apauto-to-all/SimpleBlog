@@ -41,13 +41,30 @@ async def format_blog(checked_blogs_list: dict) -> dict:
             )
         else:
             blog_dict["check_time"] = -1
+
         blog_id = blog["blog_id"]
         blog_info = await operate.blogs_select(blog_id)
+
         blog_dict["title"] = blog_info.get("title")
         blog_dict["content"] = blog_info.get("content")
-        tags_list = await operate.tags_select(blog_id)
-        blog_dict["tags"] = tags_list
+        blog_dict["username"] = blog_info.get("username")
+
+        blog_dict["tags"] = await operate.tags_select(blog_id)
         formatted_blogs.append(blog_dict)
+    [
+        {
+            "blog_id": 1,
+            "title": "博客标题",
+            "content": "博客内容",
+            "username": "博客作者",
+            "tags": ["标签1", "标签2"],
+            "add_time": "2021-07-01 12:00:00",
+            "check_time": "2021-07-01 12:00:00",
+            "is_pass": True,
+            "is_check": True,
+            "check_user": "审核人",
+        }
+    ]
     return formatted_blogs
 
 
@@ -61,20 +78,6 @@ async def get_checked_blogs(start: int, count: int):
     """
     logger.info("开始获取所有已经审核的博客")
     checked_blogs_list = await operate.need_check_blogs_get_checked(start, count)
-    # 添加博客内容
-    [
-        {
-            "blog_id": 1,  # 博客id
-            "title": "博客标题",  # 博客标题
-            "content": "博客内容",  # 博客内容
-            "tags": "博客标签",  # 博客标签
-            "add_time": "2021-01-01 00:00:00",  # 添加时间
-            "is_check": True,  # 是否审核
-            "is_pass": False,  # 是否通过审核
-            "check_time": "2021-01-01 00:00:00",  # 审核时间
-            "check_user": "admin",  # 审核人
-        }
-    ]
     return await format_blog(checked_blogs_list)
 
 
@@ -97,20 +100,6 @@ async def get_need_check_blogs(start: int, count: int):
     :return: 返回所有需要审核的博客
     """
     need_check_blogs_list = await operate.need_check_blogs_get_not_check(start, count)
-    # 添加博客内容
-    [
-        {
-            "blog_id": 1,  # 博客id
-            "title": "博客标题",  # 博客标题
-            "content": "博客内容",  # 博客内容
-            "tags": "博客标签",  # 博客标签
-            "add_time": "2021-01-01 00:00:00",  # 添加时间
-            "is_check": False,  # 是否审核
-            "is_pass": False,  # 是否通过审核
-            "check_time": "2021-01-01 00:00:00",  # 审核时间
-            "check_user": None,  # 审核人
-        }
-    ]
     return await format_blog(need_check_blogs_list)
 
 

@@ -29,12 +29,13 @@
             method: 'GET',
             page: true, // 开启分页
             cols: [[ // 表头
-                { field: 'blog_id', title: '博客ID', width: 100 },
+                { field: 'blog_id', title: '博客ID', width: 100, align: 'center' },
+                { field: 'username', title: '创作者用户名', width: 150, align: 'center' },
                 { field: 'title', title: '标题', width: 200 },
                 { field: 'content', title: '内容', width: 350 },
                 { field: 'tags', title: '标签', width: 200 },
-                { field: 'add_time', title: '添加时间', width: 180 },
-                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200 }
+                { field: 'add_time', title: '添加时间', width: 180, align: 'center' },
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200, align: 'center' }
             ]]
         });
 

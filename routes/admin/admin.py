@@ -82,3 +82,23 @@ async def admin_check(
                 {"request": request},
             )
     return RedirectResponse("/login", status_code=302)
+
+
+# 审核需要审核的博客页面
+@router.get("/admin/checked", response_class=HTMLResponse)
+async def admin_check(
+    request: Request,
+    access_token: Optional[str] = Cookie(None),
+):
+    if access_token:
+        username_use = await login_util.get_user_from_jwt(access_token)
+        if (
+            username_use
+            and await login_util.is_login(access_token, username_use)
+            and await admin_util.is_admin(username_use)
+        ):
+            return templates.TemplateResponse(
+                "admin/admin_checked.html",
+                {"request": request},
+            )
+    return RedirectResponse("/login", status_code=302)

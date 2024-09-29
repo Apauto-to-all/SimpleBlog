@@ -61,9 +61,7 @@ async def get_user_blogs_checked(
             return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     start = (page - 1) * limit
-    blogs_list = await check_util.get_checked_blogs(
-        start=start, count=limit, is_all=True
-    )
+    blogs_list = await check_util.get_checked_blogs(start=start, count=limit)
     blogs_count = await check_util.get_checked_blogs_count()
     return JSONResponse(
         content={"code": 0, "msg": "", "count": blogs_count, "data": blogs_list},

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %} 已审核博客信息页面 {% endblock %}
+
+{% block content %}
+
+<div style="padding: 16px;">
+    <table class="layui-hide" id="blog" lay-filter="blog"></table>
+</div>
+
+<!-- 工具条模板 -->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm" lay-event="show">查看博客</a>
+</script>
+
+<script src="/layui/layui.js"></script>
+<script src="/static/js/marked@3.0.7.js"></script>
+<link rel="stylesheet" href="/static/css/github-markdown-light.css">
+
+<script>
+    layui.use(['table', 'layer'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+
+        // 初始化表格
+        table.render({
+            elem: '#blog',
+            url: '/admin/api/get_user_blogs_checked', // 数据接口
+            method: 'GET',
+            page: true, // 开启分页
+            cols: [[ // 表头
+                { field: 'blog_id', title: '博客ID', width: 100, align: 'center' },
+                { field: 'username', title: '创作者用户名', width: 100, align: 'center' },
+                { field: 'title', title: '标题', width: 200 },
+                { field: 'content', title: '内容', width: 300 },
+                { field: 'tags', title: '标签', width: 200 },
+                { field: 'add_time', title: '添加时间', width: 180, align: 'center' },
+                {
+                    field: 'is_check', title: '是否审核', width: 80, align: 'center', templet: function (d) {
+                        return d.is_check ? '<span style="color: green;">已审核</span>' : '<span style="color: red;">未审核</span>';
+                    }
+                },
+                { field: 'check_time', title: '审核时间', width: 180, align: 'center' },
+                { field: 'check_user', title: '审核人', width: 100, align: 'center' },
+                {
+                    field: 'is_pass', title: '是否通过', width: 80, align: 'center', templet: function (d) {
+                        return d.is_pass ? '<span style="color: green;">通过</span>' : '<span style="color: red;">未通过</span>';
+                    }
+                },
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 100, align: 'center' }
+            ]]
+        });
+
+        // 监听工具条
+        table.on('tool(blog)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'show') {
+                // 显示博客内容
+                layer.open({
+                    type: 1,
+                    title: '博客预览',
+                    content: '<div style="padding: 20px;" class="markdown-body">' + marked(data.content) + '</div>',
+                    area: ['90%', '90%']
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

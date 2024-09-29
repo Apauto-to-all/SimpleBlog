@@ -6,8 +6,13 @@
 
 <div style="padding: 16px;">
     <!-- 添加审核按钮 -->
-    <button id="checkBlogButton" class="layui-btn layui-btn-lg" onclick="window.location.href = '/admin/check';">
+    <button style="margin-bottom: 16px;" id="checkBlogButton" class="layui-btn layui-btn-lg"
+        onclick="window.location.href = '/admin/check';">
         审核博客<span id="pendingCount" class="layui-badge">{{ need_check_count }}</span>
+    </button>
+    <button style="margin-bottom: 16px;" class="layui-btn layui-btn-lg layui-btn-normal"
+        onclick="window.location.href = '/admin/checked';">
+        查看已审核的博客
     </button>
     <table class="layui-hide" id="user" lay-filter="user"></table>
 </div>

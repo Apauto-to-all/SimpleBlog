@@ -58,7 +58,7 @@ class NeedCheckBlogs:
                 logger.error(e)
                 return False
 
-    # 获取所有博客信息，包括未审核的博客
+    # 获取所有未审核的博客
     async def need_check_blogs_get_not_check(self, start: int, count: int):
         """
         获取所有未审核的博客
