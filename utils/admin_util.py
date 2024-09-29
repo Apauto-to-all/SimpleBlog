@@ -76,10 +76,11 @@ async def get_all_users(username_use, start: int, count: int, search: str = None
         user_info["blog_count"] = await operate.blogs_count(user_info["username"])
     # 弹出管理员用户信息，但保留自己的信息，超级管理员除外
     if username_use != "admin":
-        for user_info in users_list:
-            if user_info["is_admin"] and user_info["username"] != username_use:
-                users_list.remove(user_info)
-
+        users_list = [
+            user_info
+            for user_info in users_list
+            if not (user_info["is_admin"] and user_info["username"] != username_use)
+        ]
     [
         {
             "username": "test",
