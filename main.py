@@ -62,6 +62,7 @@ route_modules = [
     "routes.blog.get_blog",
     "routes.blog.like_blog",
     "routes.blog.search_blog",
+    "routes.blog.comment_blog",
     "routes.creation.creation",
     "routes.creation.blog_creation",
     "routes.login.login",

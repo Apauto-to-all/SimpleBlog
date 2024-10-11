@@ -81,28 +81,7 @@ async def get_all_users(username_use, start: int, count: int, search: str = None
             for user_info in users_list
             if not (user_info["is_admin"] and user_info["username"] != username_use)
         ]
-    [
-        {
-            "username": "test",
-            "nickname": "测试用户",
-            "is_forbid": False,
-            "forbid_end_time": -1,
-            "forbid_remaining_time": -1,
-            "is_admin": False,
-            "admin_end_time": -1,
-            "blog_count": 0,
-        },
-        {
-            "username": "test2",
-            "nickname": "测试用户2",
-            "is_forbid": True,
-            "forbid_end_time": "2021-07-01 00:00:00",
-            "forbid_remaining_time": "00:00:00",
-            "is_admin": True,
-            "admin_end_time": "2021-07-01 00:00:00",
-            "blog_count": 1,
-        },
-    ]
+    
     return users_list
 
 

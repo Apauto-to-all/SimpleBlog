@@ -191,6 +191,26 @@ async def create_tables():
     """
     await conn.execute(sql)
 
+    # 创建博客评论表
+    """
+    博客评论表：
+    博客id - 外键，关联博客表
+    用户名 - 外键，关联用户表
+    评论内容 - 无限制
+    评论时间 - 使用时间戳存储，int（time.time()）格式
+    主键 - 博客id + 用户名 + 评论时间
+    """
+    sql = """
+    CREATE TABLE IF NOT EXISTS comments (
+        blog_id int REFERENCES blogs(blog_id) not null,
+        username varchar(15) REFERENCES users(username) not null,
+        content text,
+        comment_time int,
+        PRIMARY KEY (blog_id, username, comment_time)
+    );
+    """
+    await conn.execute(sql)
+
     await conn.close()
 
 

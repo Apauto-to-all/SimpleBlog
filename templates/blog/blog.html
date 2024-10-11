@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="/static/css/blog.css">
 <!-- 导入Markdown样式 -->
 <link rel="stylesheet" href="/static/css/github-markdown-light.css">
+<!-- 评论区样式 -->
+<link rel="stylesheet" href="/static/css/comment.css">
 <!-- 导入点赞的js文件 -->
 <script src="/static/js/like.js"></script>
 
@@ -51,6 +53,18 @@
     </button>
   </div>
   <!-- 评论区 -->
+  <div id="comment-section" style="margin-top: 30px;">
+    <h2>评论区</h2>
+    <!-- 评论框 -->
+    <div class="layui-form-item">
+      <textarea id="comment-input" class="layui-textarea" placeholder="请输入评论"></textarea>
+      <button id="submit-comment" class="layui-btn layui-btn-normal">提交评论</button>
+    </div>
+    <!-- 显示评论 -->
+    <div id="comments-display" style="margin-top: 20px;">
+      <!-- 评论列表 -->
+    </div>
+  </div>
 </div>
 
 <script>
@@ -72,6 +86,115 @@
   layui.use('code', function () {
     layui.code({
       elem: '.code-demo'
+    });
+  });
+
+  layui.use(['layer', 'flow'], function () {
+    var layer = layui.layer;
+    // 提交评论
+    document.getElementById('submit-comment').addEventListener('click', async function () {
+      const commentInput = document.getElementById('comment-input');
+      const commentText = commentInput.value.trim();
+      if (commentText === '') {
+        layer.msg('评论不能为空');
+        return;
+      }
+      // 发送评论到服务器
+      const response = await fetch(`/blog/api/submit_comment?blog_id={{ blog_dict.blog_id }}&comment=${commentText}`, {
+        method: 'GET',
+      });
+      if (response.ok) {
+        const result = await response.json();
+        layer.msg('评论成功，即将刷新页面', { icon: 1, time: 1000 }, function () {
+          window.location.reload();
+        });
+      } else {
+        const errorResult = await response.json();
+        layer.msg(errorResult.message, { icon: 2 });
+      }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    layui.use(['layer', 'flow'], function () {
+      var layer = layui.layer;
+      var flow = layui.flow;
+
+      var blog_id = "{{ blog_dict.blog_id }}";
+      const count = 10; // 每页显示的评论数量
+
+      // 初始化流加载
+      flow.load({
+        elem: '#comments-display', // 流加载容器
+        done: function (page, next) { // 执行下一页的回调
+          // page会自动从1开始，每次递增1
+          fetchCommentList(blog_id, (page - 1) * count, count, next);
+        }
+      });
+
+      // 获取评论列表
+      async function fetchCommentList(blog_id, start = 0, count = 10, next) {
+        try {
+          // 构建请求URL
+          const url = new URL(`/blog/api/get_comments`, window.location.origin);
+          url.searchParams.append('blog_id', blog_id);
+          url.searchParams.append('start', start);
+          url.searchParams.append('count', count);
+          // 发送请求获取评论列表
+          const response = await fetch(url);
+          // 判断响应是否成功
+          if (!response.ok) {
+            layer.msg('获取评论列表失败', { icon: 2 });
+            return;
+          }
+          // 获取评论列表,json()格式化响应数据
+          const commentList = await response.json();
+          // 使用map()方法遍历commentList数组，生成的HTML内容
+          const lis = commentList.map(comment => createCommentCard(comment)).join('');
+          // 调用next()方法加载下一页，如果加载页数不满count，判断为最后一页
+          next(lis, commentList.length === count);
+        } catch (error) {
+          layer.msg('获取评论列表失败', { icon: 2 });
+        }
+      }
+
+      // 创建评论卡片
+      function createCommentCard(comment) {
+        return `
+          <div class="comment-card">
+              <div class="comment-info">
+                  <img src="${comment.avatar_url}" alt="${comment.nickname}" class="user-avatar">
+                  <a href="/author/${comment.username}" class="author-link">${comment.nickname}</a>
+                  <span class="comment-time">评论时间：${comment.comment_time_show}</span>
+              </div>
+              <div class="comment-content">${comment.content}</div>
+          </div>
+          `;
+      }
+      // 删除评论
+      async function deleteComment(blog_id, comment_time, username) {
+        try {
+          const response = await fetch(`/blog/api/delete_comment?blog_id=${blog_id}&comment_time=${comment_time}&username=${username}`, {
+            method: 'GET',
+            credentials: 'include' // 发送请求时包含cookie
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              layer.msg('评论删除成功', { icon: 1 });
+              window.location.reload();
+            } else {
+              layer.msg(result.message, { icon: 2 });
+            }
+          } else {
+            const errorResult = await response.json();
+            layer.msg(errorResult.message, { icon: 2 });
+          }
+        } catch (error) {
+          layer.msg('删除评论失败', { icon: 2 });
+        }
+      }
     });
   });
 </script>

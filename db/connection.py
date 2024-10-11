@@ -1,7 +1,6 @@
 import sys
 import traceback
 import asyncpg  # 导入 asyncpg 模块，用于异步访问 PostgreSQL 数据库
-import asyncio
 import logging
 
 # 获取日志记录器
@@ -23,6 +22,7 @@ from .forbid_users import ForbidUserOperation
 from .forbid_blogs import ForbidBlogOperation
 from .admins_operate import AdminsOperate
 from .need_check_blogs import NeedCheckBlogs
+from .comments_operate import CommentsOperate
 
 
 # 数据库操作类
@@ -35,6 +35,7 @@ class DatabaseOperation(
     ForbidBlogOperation,
     AdminsOperate,
     NeedCheckBlogs,
+    CommentsOperate,
 ):
     _instance = None  # 单例模式
     error_mun = 0  # 错误次数
