@@ -128,7 +128,7 @@ async def delete_admin(
     access_token: Optional[str] = Cookie(None),
     username: str = Query(None),  # 用户名
 ):
-    if access_token and username:
+    if access_token and not username:
         return JSONResponse(content={"error": "参数错误"}, status_code=400)
 
     username_use = await login_util.get_user_from_jwt(access_token)
